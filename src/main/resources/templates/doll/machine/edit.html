@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${machine.id}"  type="hidden">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">娃娃机id：</label>
+								<div class="col-sm-8">
+									<input id="machineId" name="machineId" th:value="${machine.machineId}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">产品id：</label>
+								<div class="col-sm-8">
+									<input id="itemId" name="itemId" th:value="${machine.itemId}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">娃娃机状态：</label>
+								<div class="col-sm-8">
+									<input id="machineStatus" name="machineStatus" th:value="${machine.machineStatus}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">娃娃机地址：</label>
+								<div class="col-sm-8">
+									<input id="machineAddress" name="machineAddress" th:value="${machine.machineAddress}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">房间：</label>
+								<div class="col-sm-8">
+									<input id="chatRoom" name="chatRoom" th:value="${machine.chatRoom}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">主摄像头：</label>
+								<div class="col-sm-8">
+									<input id="mainCamera" name="mainCamera" th:value="${machine.mainCamera}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">子摄像头：</label>
+								<div class="col-sm-8">
+									<input id="subCamera" name="subCamera" th:value="${machine.subCamera}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">mac地址：</label>
+								<div class="col-sm-8">
+									<input id="machineMac" name="machineMac" th:value="${machine.machineMac}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">创建时间：</label>
+								<div class="col-sm-8">
+									<input id="gmtCreate" name="gmtCreate" th:value="${machine.gmtCreate}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">修改时间：</label>
+								<div class="col-sm-8">
+									<input id="gmtModify" name="gmtModify" th:value="${machine.gmtModify}" class="form-control" type="text">
+								</div>
+							</div>
+																					<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/doll/machine/edit.js">
+	</script>
+</body>
+</html>

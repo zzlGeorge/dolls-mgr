@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.doll.dao.ItemDao">
+
+	<select id="get" resultType="com.bootdo.doll.domain.ItemDO">
+		select `id`,`biz_id`,`item_type`,`package_name`,`img`,`img_detail`,`item_img`,`name`,`intro`,`change_text`,`take_cry`,`change_cry`,`buy_price`,`price`,`tag`,`reward_percent`,`weight`,`gmt_create`,`biz_type`,`vip_limit`,`pk` from doll_item where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.doll.domain.ItemDO">
+		select `id`,`biz_id`,`item_type`,`package_name`,`img`,`img_detail`,`item_img`,`name`,`intro`,`change_text`,`take_cry`,`change_cry`,`buy_price`,`price`,`tag`,`reward_percent`,`weight`,`gmt_create`,`biz_type`,`vip_limit`,`pk` from doll_item
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="bizId != null and bizId != ''"> and biz_id = #{bizId} </if>
+		  		  <if test="itemType != null and itemType != ''"> and item_type = #{itemType} </if>
+		  		  <if test="packageName != null and packageName != ''"> and package_name = #{packageName} </if>
+		  		  <if test="img != null and img != ''"> and img = #{img} </if>
+		  		  <if test="imgDetail != null and imgDetail != ''"> and img_detail = #{imgDetail} </if>
+		  		  <if test="itemImg != null and itemImg != ''"> and item_img = #{itemImg} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="intro != null and intro != ''"> and intro = #{intro} </if>
+		  		  <if test="changeText != null and changeText != ''"> and change_text = #{changeText} </if>
+		  		  <if test="takeCry != null and takeCry != ''"> and take_cry = #{takeCry} </if>
+		  		  <if test="changeCry != null and changeCry != ''"> and change_cry = #{changeCry} </if>
+		  		  <if test="buyPrice != null and buyPrice != ''"> and buy_price = #{buyPrice} </if>
+		  		  <if test="price != null and price != ''"> and price = #{price} </if>
+		  		  <if test="tag != null and tag != ''"> and tag = #{tag} </if>
+		  		  <if test="rewardPercent != null and rewardPercent != ''"> and reward_percent = #{rewardPercent} </if>
+		  		  <if test="weight != null and weight != ''"> and weight = #{weight} </if>
+		  		  <if test="gmtCreate != null and gmtCreate != ''"> and gmt_create = #{gmtCreate} </if>
+		  		  <if test="bizType != null and bizType != ''"> and biz_type = #{bizType} </if>
+		  		  <if test="vipLimit != null and vipLimit != ''"> and vip_limit = #{vipLimit} </if>
+		  		  <if test="pk != null and pk != ''"> and pk = #{pk} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from doll_item
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="bizId != null and bizId != ''"> and biz_id = #{bizId} </if>
+		  		  <if test="itemType != null and itemType != ''"> and item_type = #{itemType} </if>
+		  		  <if test="packageName != null and packageName != ''"> and package_name = #{packageName} </if>
+		  		  <if test="img != null and img != ''"> and img = #{img} </if>
+		  		  <if test="imgDetail != null and imgDetail != ''"> and img_detail = #{imgDetail} </if>
+		  		  <if test="itemImg != null and itemImg != ''"> and item_img = #{itemImg} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="intro != null and intro != ''"> and intro = #{intro} </if>
+		  		  <if test="changeText != null and changeText != ''"> and change_text = #{changeText} </if>
+		  		  <if test="takeCry != null and takeCry != ''"> and take_cry = #{takeCry} </if>
+		  		  <if test="changeCry != null and changeCry != ''"> and change_cry = #{changeCry} </if>
+		  		  <if test="buyPrice != null and buyPrice != ''"> and buy_price = #{buyPrice} </if>
+		  		  <if test="price != null and price != ''"> and price = #{price} </if>
+		  		  <if test="tag != null and tag != ''"> and tag = #{tag} </if>
+		  		  <if test="rewardPercent != null and rewardPercent != ''"> and reward_percent = #{rewardPercent} </if>
+		  		  <if test="weight != null and weight != ''"> and weight = #{weight} </if>
+		  		  <if test="gmtCreate != null and gmtCreate != ''"> and gmt_create = #{gmtCreate} </if>
+		  		  <if test="bizType != null and bizType != ''"> and biz_type = #{bizType} </if>
+		  		  <if test="vipLimit != null and vipLimit != ''"> and vip_limit = #{vipLimit} </if>
+		  		  <if test="pk != null and pk != ''"> and pk = #{pk} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.doll.domain.ItemDO" useGeneratedKeys="true" keyProperty="id">
+		insert into doll_item
+		(
+			`biz_id`, 
+			`item_type`, 
+			`package_name`, 
+			`img`, 
+			`img_detail`, 
+			`item_img`, 
+			`name`, 
+			`intro`, 
+			`change_text`, 
+			`take_cry`, 
+			`change_cry`, 
+			`buy_price`, 
+			`price`, 
+			`tag`, 
+			`reward_percent`, 
+			`weight`, 
+			`gmt_create`, 
+			`biz_type`, 
+			`vip_limit`, 
+			`pk`
+		)
+		values
+		(
+			#{bizId}, 
+			#{itemType}, 
+			#{packageName}, 
+			#{img}, 
+			#{imgDetail}, 
+			#{itemImg}, 
+			#{name}, 
+			#{intro}, 
+			#{changeText}, 
+			#{takeCry}, 
+			#{changeCry}, 
+			#{buyPrice}, 
+			#{price}, 
+			#{tag}, 
+			#{rewardPercent}, 
+			#{weight}, 
+			#{gmtCreate}, 
+			#{bizType}, 
+			#{vipLimit}, 
+			#{pk}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.doll.domain.ItemDO">
+		update doll_item 
+		<set>
+			<if test="bizId != null">`biz_id` = #{bizId}, </if>
+			<if test="itemType != null">`item_type` = #{itemType}, </if>
+			<if test="packageName != null">`package_name` = #{packageName}, </if>
+			<if test="img != null">`img` = #{img}, </if>
+			<if test="imgDetail != null">`img_detail` = #{imgDetail}, </if>
+			<if test="itemImg != null">`item_img` = #{itemImg}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="intro != null">`intro` = #{intro}, </if>
+			<if test="changeText != null">`change_text` = #{changeText}, </if>
+			<if test="takeCry != null">`take_cry` = #{takeCry}, </if>
+			<if test="changeCry != null">`change_cry` = #{changeCry}, </if>
+			<if test="buyPrice != null">`buy_price` = #{buyPrice}, </if>
+			<if test="price != null">`price` = #{price}, </if>
+			<if test="tag != null">`tag` = #{tag}, </if>
+			<if test="rewardPercent != null">`reward_percent` = #{rewardPercent}, </if>
+			<if test="weight != null">`weight` = #{weight}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="bizType != null">`biz_type` = #{bizType}, </if>
+			<if test="vipLimit != null">`vip_limit` = #{vipLimit}, </if>
+			<if test="pk != null">`pk` = #{pk}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from doll_item where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from doll_item where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

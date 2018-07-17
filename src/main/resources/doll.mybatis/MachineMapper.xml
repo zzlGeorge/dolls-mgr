@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.doll.dao.MachineDao">
+
+	<select id="get" resultType="com.bootdo.doll.domain.MachineDO">
+		select `id`,`machine_id`,`item_id`,`machine_status`,`machine_address`,`chat_room`,`main_camera`,`sub_camera`,`machine_mac`,`gmt_create`,`gmt_modify` from doll_machine where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.doll.domain.MachineDO">
+		select `id`,`machine_id`,`item_id`,`machine_status`,`machine_address`,`chat_room`,`main_camera`,`sub_camera`,`machine_mac`,`gmt_create`,`gmt_modify` from doll_machine
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="machineId != null and machineId != ''"> and machine_id = #{machineId} </if>
+		  		  <if test="itemId != null and itemId != ''"> and item_id = #{itemId} </if>
+		  		  <if test="machineStatus != null and machineStatus != ''"> and machine_status = #{machineStatus} </if>
+		  		  <if test="machineAddress != null and machineAddress != ''"> and machine_address = #{machineAddress} </if>
+		  		  <if test="chatRoom != null and chatRoom != ''"> and chat_room = #{chatRoom} </if>
+		  		  <if test="mainCamera != null and mainCamera != ''"> and main_camera = #{mainCamera} </if>
+		  		  <if test="subCamera != null and subCamera != ''"> and sub_camera = #{subCamera} </if>
+		  		  <if test="machineMac != null and machineMac != ''"> and machine_mac = #{machineMac} </if>
+		  		  <if test="gmtCreate != null and gmtCreate != ''"> and gmt_create = #{gmtCreate} </if>
+		  		  <if test="gmtModify != null and gmtModify != ''"> and gmt_modify = #{gmtModify} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from doll_machine
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="machineId != null and machineId != ''"> and machine_id = #{machineId} </if>
+		  		  <if test="itemId != null and itemId != ''"> and item_id = #{itemId} </if>
+		  		  <if test="machineStatus != null and machineStatus != ''"> and machine_status = #{machineStatus} </if>
+		  		  <if test="machineAddress != null and machineAddress != ''"> and machine_address = #{machineAddress} </if>
+		  		  <if test="chatRoom != null and chatRoom != ''"> and chat_room = #{chatRoom} </if>
+		  		  <if test="mainCamera != null and mainCamera != ''"> and main_camera = #{mainCamera} </if>
+		  		  <if test="subCamera != null and subCamera != ''"> and sub_camera = #{subCamera} </if>
+		  		  <if test="machineMac != null and machineMac != ''"> and machine_mac = #{machineMac} </if>
+		  		  <if test="gmtCreate != null and gmtCreate != ''"> and gmt_create = #{gmtCreate} </if>
+		  		  <if test="gmtModify != null and gmtModify != ''"> and gmt_modify = #{gmtModify} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.doll.domain.MachineDO" useGeneratedKeys="true" keyProperty="id">
+		insert into doll_machine
+		(
+			`machine_id`, 
+			`item_id`, 
+			`machine_status`, 
+			`machine_address`, 
+			`chat_room`, 
+			`main_camera`, 
+			`sub_camera`, 
+			`machine_mac`, 
+			`gmt_create`, 
+			`gmt_modify`
+		)
+		values
+		(
+			#{machineId}, 
+			#{itemId}, 
+			#{machineStatus}, 
+			#{machineAddress}, 
+			#{chatRoom}, 
+			#{mainCamera}, 
+			#{subCamera}, 
+			#{machineMac}, 
+			#{gmtCreate}, 
+			#{gmtModify}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.doll.domain.MachineDO">
+		update doll_machine 
+		<set>
+			<if test="machineId != null">`machine_id` = #{machineId}, </if>
+			<if test="itemId != null">`item_id` = #{itemId}, </if>
+			<if test="machineStatus != null">`machine_status` = #{machineStatus}, </if>
+			<if test="machineAddress != null">`machine_address` = #{machineAddress}, </if>
+			<if test="chatRoom != null">`chat_room` = #{chatRoom}, </if>
+			<if test="mainCamera != null">`main_camera` = #{mainCamera}, </if>
+			<if test="subCamera != null">`sub_camera` = #{subCamera}, </if>
+			<if test="machineMac != null">`machine_mac` = #{machineMac}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModify != null">`gmt_modify` = #{gmtModify}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from doll_machine where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from doll_machine where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
