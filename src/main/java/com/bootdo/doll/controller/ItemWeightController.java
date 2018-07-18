@@ -3,12 +3,10 @@ package com.bootdo.doll.controller;
 import java.util.List;
 import java.util.Map;
 
-import com.bootdo.doll.validate.CommonValidate;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,56 +15,54 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bootdo.doll.domain.ItemDO;
-import com.bootdo.doll.service.ItemService;
+import com.bootdo.doll.domain.ItemWeightDO;
+import com.bootdo.doll.service.ItemWeightService;
 import com.bootdo.common.utils.PageUtils;
 import com.bootdo.common.utils.Query;
 import com.bootdo.common.utils.R;
 
-import javax.validation.Valid;
-
 /**
  * @author mading
  * @email zhang0909990@qq.com
- * @date 2018-07-17 15:17:23
+ * @date 2018-07-18 19:37:00
  */
 
 @Controller
-@RequestMapping("/doll/item")
-public class ItemController {
+@RequestMapping("/doll/itemWeight")
+public class ItemWeightController {
     @Autowired
-    private ItemService itemService;
+    private ItemWeightService itemWeightService;
 
     @GetMapping()
-    @RequiresPermissions("doll:item:item")
-    String Item() {
-        return "doll/item/item";
+    @RequiresPermissions("doll:itemWeight:itemWeight")
+    String ItemWeight() {
+        return "doll/itemWeight/itemWeight";
     }
 
     @ResponseBody
     @GetMapping("/list")
-    @RequiresPermissions("doll:item:item")
+    @RequiresPermissions("doll:itemWeight:itemWeight")
     public PageUtils list(@RequestParam Map<String, Object> params) {
         //查询列表数据
         Query query = new Query(params);
-        List<ItemDO> itemList = itemService.list(query);
-        int total = itemService.count(query);
-        PageUtils pageUtils = new PageUtils(itemList, total);
+        List<ItemWeightDO> itemWeightList = itemWeightService.list(query);
+        int total = itemWeightService.count(query);
+        PageUtils pageUtils = new PageUtils(itemWeightList, total);
         return pageUtils;
     }
 
     @GetMapping("/add")
-    @RequiresPermissions("doll:item:add")
+    @RequiresPermissions("doll:itemWeight:add")
     String add() {
-        return "doll/item/add";
+        return "doll/itemWeight/add";
     }
 
     @GetMapping("/edit/{id}")
-    @RequiresPermissions("doll:item:edit")
-    String edit(@PathVariable("bizId") Long bizId, Model model) {
-        ItemDO item = itemService.get(bizId);
-        model.addAttribute("item", item);
-        return "doll/item/edit";
+    @RequiresPermissions("doll:itemWeight:edit")
+    String edit(@PathVariable("id") Long id, Model model) {
+        ItemWeightDO itemWeight = itemWeightService.get(id);
+        model.addAttribute("itemWeight", itemWeight);
+        return "doll/itemWeight/edit";
     }
 
     /**
@@ -74,19 +70,15 @@ public class ItemController {
      */
     @ResponseBody
     @PostMapping("/save")
-    @RequiresPermissions("doll:item:add")
-    public R save(@Valid ItemDO item,BindingResult bindingResult) {
+    @RequiresPermissions("doll:itemWeight:add")
+    public R save(ItemWeightDO itemWeight) {
 
-        List<String> errorList = CommonValidate.itemValidate(item, bindingResult);
+        R result = itemWeightService.save(itemWeight, R.ok());
 
-        if (errorList.size() > 0) {
-            return R.error(406, "校验失败", errorList);
-        }
-
-        if (itemService.save(item) > 0) {
+        if (result.get("error") == null) {
             return R.ok();
         }
-        return R.error();
+        return result;
     }
 
     /**
@@ -94,9 +86,9 @@ public class ItemController {
      */
     @ResponseBody
     @RequestMapping("/update")
-    @RequiresPermissions("doll:item:edit")
-    public R update(ItemDO item) {
-        itemService.update(item);
+    @RequiresPermissions("doll:itemWeight:edit")
+    public R update(ItemWeightDO itemWeight) {
+        itemWeightService.update(itemWeight);
         return R.ok();
     }
 
@@ -105,9 +97,9 @@ public class ItemController {
      */
     @PostMapping("/remove")
     @ResponseBody
-    @RequiresPermissions("doll:item:remove")
+    @RequiresPermissions("doll:itemWeight:remove")
     public R remove(Long id) {
-        if (itemService.remove(id) > 0) {
+        if (itemWeightService.remove(id) > 0) {
             return R.ok();
         }
         return R.error();
@@ -118,9 +110,9 @@ public class ItemController {
      */
     @PostMapping("/batchRemove")
     @ResponseBody
-    @RequiresPermissions("doll:item:batchRemove")
+    @RequiresPermissions("doll:itemWeight:batchRemove")
     public R remove(@RequestParam("ids[]") Long[] ids) {
-        itemService.batchRemove(ids);
+        itemWeightService.batchRemove(ids);
         return R.ok();
     }
 

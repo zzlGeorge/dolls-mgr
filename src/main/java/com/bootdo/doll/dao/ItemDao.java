@@ -29,4 +29,5 @@ public interface ItemDao {
 	int remove(Long id);
 	
 	int batchRemove(Long[] ids);
+
 }

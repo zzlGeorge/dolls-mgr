@@ -3,14 +3,12 @@ $().ready(function () {
 });
 
 $.validator.setDefaults({
-    submitHandler: function () {
-        save();
-    }
-});
-
-$.validator.setDefaults({
-    submitHandler: function () {
-        saveNew();
+    submitHandler: function (form) {
+        if ($(form).attr('id') == 'signupForm') {
+            save();
+        } else if ($(form).attr('id') == 'saveNewForm') {
+            saveNew();
+        }
     }
 });
 
@@ -32,7 +30,7 @@ function save() {
                 parent.layer.close(index);
 
             } else {
-                parent.layer.alert(data.msg)
+                parent.layer.alert(handleValidate(data));
             }
 
         }
@@ -58,12 +56,22 @@ function saveNew() {
                 parent.layer.close(index);
 
             } else {
-                parent.layer.alert(data.msg)
+                parent.layer.alert(handleValidate(data));
             }
 
         }
     });
 
+}
+
+/** 校验失败返回数据展示处理 */
+function handleValidate(data) {
+    var alertInfo = data.msg + '<br>';
+    var errors = data.errorList;
+    for (var i = 0; i < errors.length; i++) {
+        alertInfo += (i + 1) + '. ' + errors[i] + '<br>';
+    }
+    return alertInfo;
 }
 
 function validateRule() {
@@ -79,7 +87,7 @@ function validateRule() {
                 required: icon + "请输入姓名"
             }
         }
-    })
+    });
 
     $("#saveNewForm").validate({
         rules: {

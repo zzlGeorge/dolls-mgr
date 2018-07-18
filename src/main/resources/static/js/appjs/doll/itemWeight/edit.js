@@ -4,14 +4,14 @@ $().ready(function() {
 
 $.validator.setDefaults({
 	submitHandler : function() {
-		save();
+		update();
 	}
 });
-function save() {
+function update() {
 	$.ajax({
 		cache : true,
 		type : "POST",
-		url : "/doll/item/save",
+		url : "/doll/itemWeight/update",
 		data : $('#signupForm').serialize(),// 你的formid
 		async : false,
 		error : function(request) {
@@ -25,23 +25,13 @@ function save() {
 				parent.layer.close(index);
 
 			} else {
-				parent.layer.alert(handleValidate(data))
+				parent.layer.alert(data.msg)
 			}
 
 		}
 	});
 
 }
-
-function handleValidate(data) {
-    var alertInfo = data.msg + '<br>';
-    var errors = data.errorList;
-    for (var i = 0; i < errors.length; i++) {
-        alertInfo += (i + 1) + '. ' + errors[i] + '<br>';
-    }
-    return alertInfo;
-}
-
 function validateRule() {
 	var icon = "<i class='fa fa-times-circle'></i> ";
 	$("#signupForm").validate({
@@ -52,7 +42,7 @@ function validateRule() {
 		},
 		messages : {
 			name : {
-				required : icon + "请输入姓名"
+				required : icon + "请输入名字"
 			}
 		}
 	})

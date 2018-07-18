@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.doll.dao.ItemWeightDao">
+
+    <select id="get" resultType="com.bootdo.doll.domain.ItemWeightDO">
+		select `id`,`item_id`,`zhua_zhua`,`sui_shen`,`zai_jia`,`ke_ai`,`ku_hei`,`ding_dong`,`chao_ren`,`gmt_create`,`gmt_modify` from doll_item_weight where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.bootdo.doll.domain.ItemWeightDO">
+        select
+        `id`,`item_id`,`zhua_zhua`,`sui_shen`,`zai_jia`,`ke_ai`,`ku_hei`,`ding_dong`,`chao_ren`,`gmt_create`,`gmt_modify`
+        from doll_item_weight
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>
+            <if test="zhuaZhua != null and zhuaZhua != ''">and zhua_zhua = #{zhuaZhua}</if>
+            <if test="suiShen != null and suiShen != ''">and sui_shen = #{suiShen}</if>
+            <if test="zaiJia != null and zaiJia != ''">and zai_jia = #{zaiJia}</if>
+            <if test="keAi != null and keAi != ''">and ke_ai = #{keAi}</if>
+            <if test="kuHei != null and kuHei != ''">and ku_hei = #{kuHei}</if>
+            <if test="dingDong != null and dingDong != ''">and ding_dong = #{dingDong}</if>
+            <if test="chaoRen != null and chaoRen != ''">and chao_ren = #{chaoRen}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from doll_item_weight
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>
+            <if test="zhuaZhua != null and zhuaZhua != ''">and zhua_zhua = #{zhuaZhua}</if>
+            <if test="suiShen != null and suiShen != ''">and sui_shen = #{suiShen}</if>
+            <if test="zaiJia != null and zaiJia != ''">and zai_jia = #{zaiJia}</if>
+            <if test="keAi != null and keAi != ''">and ke_ai = #{keAi}</if>
+            <if test="kuHei != null and kuHei != ''">and ku_hei = #{kuHei}</if>
+            <if test="dingDong != null and dingDong != ''">and ding_dong = #{dingDong}</if>
+            <if test="chaoRen != null and chaoRen != ''">and chao_ren = #{chaoRen}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.doll.domain.ItemWeightDO" useGeneratedKeys="true" keyProperty="id">
+		insert into doll_item_weight
+		(
+			`item_id`, 
+			`zhua_zhua`, 
+			`sui_shen`, 
+			`zai_jia`, 
+			`ke_ai`, 
+			`ku_hei`, 
+			`ding_dong`, 
+			`chao_ren`, 
+			`gmt_create`, 
+			`gmt_modify`
+		)
+		values
+		(
+			#{itemId}, 
+			#{zhuaZhua}, 
+			#{suiShen}, 
+			#{zaiJia}, 
+			#{keAi}, 
+			#{kuHei}, 
+			#{dingDong}, 
+			#{chaoRen}, 
+			#{gmtCreate}, 
+			#{gmtModify}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.bootdo.doll.domain.ItemWeightDO">
+        update doll_item_weight
+        <set>
+            <if test="itemId != null">`item_id` = #{itemId},</if>
+            <if test="zhuaZhua != null">`zhua_zhua` = #{zhuaZhua},</if>
+            <if test="suiShen != null">`sui_shen` = #{suiShen},</if>
+            <if test="zaiJia != null">`zai_jia` = #{zaiJia},</if>
+            <if test="keAi != null">`ke_ai` = #{keAi},</if>
+            <if test="kuHei != null">`ku_hei` = #{kuHei},</if>
+            <if test="dingDong != null">`ding_dong` = #{dingDong},</if>
+            <if test="chaoRen != null">`chao_ren` = #{chaoRen},</if>
+            <if test="gmtCreate != null">`gmt_create` = #{gmtCreate},</if>
+            <if test="gmtModify != null">`gmt_modify` = #{gmtModify}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from doll_item_weight where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from doll_item_weight where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

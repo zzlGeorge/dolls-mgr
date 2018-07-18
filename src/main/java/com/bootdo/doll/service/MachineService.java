@@ -1,7 +1,9 @@
 package com.bootdo.doll.service;
 
+import com.bootdo.common.utils.Query;
 import com.bootdo.doll.domain.ItemDO;
 import com.bootdo.doll.domain.MachineDO;
+import com.bootdo.doll.service.bo.MachineBO;
 
 import java.util.List;
 import java.util.Map;
@@ -30,4 +32,12 @@ public interface MachineService {
 	int batchRemove(Long[] ids);
 
     int saveNew(MachineDO machine, ItemDO item);
+
+	/**
+	 * 列出机器与物品的对应
+	 *
+	 * @param query
+	 * @return
+	 */
+	List<MachineBO> listMachineItem(Query query);
 }

@@ -1,5 +1,9 @@
 package com.bootdo.common.utils;
 
+import com.bootdo.common.exception.BDException;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -14,6 +18,9 @@ public class Query extends LinkedHashMap<String, Object> {
 	private int limit;
 
 	public Query(Map<String, Object> params) {
+		if(MapUtils.isEmpty(params)){
+			throw new BDException("必须传offset与limit参数");
+		}
 		this.putAll(params);
 		// 分页参数
 		this.offset = Integer.parseInt(params.get("offset").toString());

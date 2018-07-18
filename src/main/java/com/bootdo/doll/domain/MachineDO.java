@@ -2,6 +2,7 @@ package com.bootdo.doll.domain;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,18 +18,24 @@ public class MachineDO implements Serializable {
     //
     private Long id;
     //娃娃机id
+    @NotNull(message = "machineId不能为空")
     private Long machineId;
     //产品id
+    @NotNull(message = "产品biz_id不能为空")
     private Long itemId;
     //娃娃机状态
     private String machineStatus;
     //娃娃机地址
+    @NotBlank(message = "机器地址不能为空")
     private String machineAddress;
     //房间
+    @NotBlank(message = "chatRoom不能为空")
     private String chatRoom;
     //主摄像头
+    @NotBlank(message = "主摄像头不能为空")
     private String mainCamera;
     //子摄像头
+    @NotBlank(message = "子摄像头不能为空")
     private String subCamera;
     //mac地址
     private String machineMac;

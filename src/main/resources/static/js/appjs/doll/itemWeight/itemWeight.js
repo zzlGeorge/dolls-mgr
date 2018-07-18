@@ -1,4 +1,4 @@
-var prefix = "/doll/machine"
+var prefix = "/doll/itemWeight"
 $(function () {
     load();
 });
@@ -8,8 +8,7 @@ function load() {
         .bootstrapTable(
             {
                 method: 'get', // 服务器数据的请求方式 get or post
-                // url: prefix + "/list", // 服务器数据的加载地址
-                url: prefix + "/listMachineItem",
+                url: prefix + "/list", // 服务器数据的加载地址
                 //	showRefresh : true,
                 //	showToggle : true,
                 //	showColumns : true,
@@ -27,17 +26,6 @@ function load() {
                 pageNumber: 1, // 如果设置了分布，首页页码
                 //search : true, // 是否显示搜索框
                 showColumns: false, // 是否显示内容下拉框（选择显示的列）
-
-                detailView:true,
-                detailFormatter:function(index, row){
-                    var html = [];
-                    var item = row['item'];
-                    $.each(item, function (key, value) {
-                        html.push('<p><b>' + key + ':</b> ' + value + '</p>');
-                    });
-                    return html.join('');
-                },
-
                 sidePagination: "server", // 设置在哪里进行分页，可选值为"client" 或者 "server"
                 queryParams: function (params) {
                     return {
@@ -59,36 +47,36 @@ function load() {
                         checkbox: true
                     },
                     {
-                        field: 'machineId',
-                        title: '娃娃机id'
-                    },
-                    {
                         field: 'itemId',
                         title: '产品bizId'
                     },
                     {
-                        field: 'machineStatus',
-                        title: '娃娃机状态'
+                        field: 'zhuaZhua',
+                        title: '抓抓排序'
                     },
                     {
-                        field: 'machineAddress',
-                        title: '娃娃机地址'
+                        field: 'suiShen',
+                        title: '随身排序'
                     },
                     {
-                        field: 'chatRoom',
-                        title: '房间'
+                        field: 'zaiJia',
+                        title: '在家排序'
                     },
                     {
-                        field: 'mainCamera',
-                        title: '主摄像头'
+                        field: 'keAi',
+                        title: '可爱排序'
                     },
                     {
-                        field: 'subCamera',
-                        title: '子摄像头'
+                        field: 'kuHei',
+                        title: '酷黑排序'
                     },
                     {
-                        field: 'machineMac',
-                        title: 'mac地址'
+                        field: 'dingDong',
+                        title: '叮咚排序'
+                    },
+                    {
+                        field: 'chaoRen',
+                        title: '超人排序'
                     },
                     {
                         field: 'gmtCreate',
@@ -130,18 +118,6 @@ function add() {
         shadeClose: false, // 点击遮罩关闭层
         area: ['800px', '520px'],
         content: prefix + '/add' // iframe的url
-    });
-}
-
-/** 上新娃娃 */
-function addNew() {
-    layer.open({
-        type: 2,
-        title: '上新娃娃',
-        maxmin: true,
-        shadeClose: false, // 点击遮罩关闭层
-        area: ['800px', '600px'],
-        content: prefix + '/addNew' // iframe的url
     });
 }
 

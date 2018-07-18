@@ -30,18 +30,18 @@ public class BDExceptionHandler {
     private Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     LogService logService;
-//
-//    /**
-//     * 自定义异常
-//     */
-//    @ExceptionHandler(BDException.class)
-//    public R handleBDException(BDException e) {
-//        logger.error(e.getMessage(), e);
-//        R r = new R();
-//        r.put("code", e.getCode());
-//        r.put("msg", e.getMessage());
-//        return r;
-//    }
+
+    /**
+     * 自定义异常
+     */
+    @ExceptionHandler(BDException.class)
+    public R handleBDException(BDException e) {
+        logger.error(e.getMessage(), e);
+        R r = new R();
+        r.put("code", e.getCode());
+        r.put("msg", e.getMessage());
+        return r;
+    }
 //
 //    @ExceptionHandler(DuplicateKeyException.class)
 //    public R handleDuplicateKeyException(DuplicateKeyException e) {
@@ -73,7 +73,7 @@ public class BDExceptionHandler {
         logDO.setMethod(request.getRequestURL().toString());
         logDO.setParams(e.toString());
         UserDO current = ShiroUtils.getUser();
-        if(null!=current){
+        if (null != current) {
             logDO.setUserId(current.getUserId());
             logDO.setUsername(current.getUsername());
         }

@@ -5,6 +5,7 @@ import com.bootdo.doll.domain.MachineDO;
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.doll.service.bo.MachineBO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -29,4 +30,6 @@ public interface MachineDao {
 	int remove(Long id);
 	
 	int batchRemove(Long[] ids);
+
+	List<MachineBO> queryMachineItem(Map<String,Object> map);
 }

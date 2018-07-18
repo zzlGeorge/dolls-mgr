@@ -4,7 +4,7 @@
 <mapper namespace="com.bootdo.doll.dao.ItemDao">
 
 	<select id="get" resultType="com.bootdo.doll.domain.ItemDO">
-		select `id`,`biz_id`,`item_type`,`package_name`,`img`,`img_detail`,`item_img`,`name`,`intro`,`change_text`,`take_cry`,`change_cry`,`buy_price`,`price`,`tag`,`reward_percent`,`weight`,`gmt_create`,`biz_type`,`vip_limit`,`pk` from doll_item where id = #{value}
+		select `id`,`biz_id`,`item_type`,`package_name`,`img`,`img_detail`,`item_img`,`name`,`intro`,`change_text`,`take_cry`,`change_cry`,`buy_price`,`price`,`tag`,`reward_percent`,`weight`,`gmt_create`,`biz_type`,`vip_limit`,`pk` from doll_item where biz_id = #{value}
 	</select>
 
 	<select id="list" resultType="com.bootdo.doll.domain.ItemDO">

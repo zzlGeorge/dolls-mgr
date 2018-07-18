@@ -2,7 +2,7 @@ package com.bootdo.doll.domain;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,18 +18,20 @@ public class ItemDO implements Serializable {
     //
     private Long id;
 
+    @NotNull(message = "bizId不能为空")
     private Long bizId;
     //
     private String itemType;
     @NotBlank(message = "包名不能为空")
     private String packageName;
-    //
+    @NotBlank(message = "img不能为空")
     private String img;
-    //
+    @NotBlank(message = "imgDetail不能为空")
     private String imgDetail;
-    //
+    @NotBlank(message = "imgDetail不能为空")
     private String itemImg;
-    //
+
+    @NotBlank(message = "name不能为空")
     private String name;
     //
     private String intro;
@@ -47,15 +49,17 @@ public class ItemDO implements Serializable {
     private String tag;
     //抓到娃娃的奖励百分比
     private Double rewardPercent;
-    //
+
+    @NotNull(message = "weight不能为空")
     private Integer weight;
     //
     private Date gmtCreate;
-    //
+    @NotBlank(message = "bizType不能为空")
     private String bizType;
     //要求的vip级别
     private Integer vipLimit;
     //参加PK吗,1参加;0不参加
+    @NotNull(message = "pk不能为空")
     private Integer pk;
 
     /**

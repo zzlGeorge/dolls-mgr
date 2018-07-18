@@ -1,7 +1,10 @@
 package com.bootdo.doll.service.impl;
 
+import com.bootdo.common.utils.Query;
 import com.bootdo.doll.dao.ItemDao;
 import com.bootdo.doll.domain.ItemDO;
+import com.bootdo.doll.service.ItemService;
+import com.bootdo.doll.service.bo.MachineBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,9 @@ public class MachineServiceImpl implements MachineService {
     @Autowired
     private ItemDao itemDao;
 
+    @Autowired
+    private ItemService itemService;
+
     @Override
     public MachineDO get(Long id) {
         return machineDao.get(id);
@@ -40,6 +46,8 @@ public class MachineServiceImpl implements MachineService {
 
     @Override
     public int save(MachineDO machine) {
+        machine.setGmtModify(new Date());
+        machine.setGmtCreate(new Date());
         return machineDao.save(machine);
     }
 
@@ -60,13 +68,14 @@ public class MachineServiceImpl implements MachineService {
 
     @Override
     public int saveNew(MachineDO machine, ItemDO item) {
-//        machine.setGmtModify(new Date());
-//        machine.setGmtCreate(new Date());
-//        item.setGmtCreate(new Date());
-//        int machineRs = machineDao.save(machine);
-//        int itemRs = itemDao.save(item);
-//        return machineRs > 0 && itemRs > 0 ? 1 : 0;
-        return 0;
+        int machineRs = save(machine);
+        int itemRs = itemService.save(item);
+        return machineRs > 0 && itemRs > 0 ? 1 : 0;
+    }
+
+    @Override
+    public List<MachineBO> listMachineItem(Query query) {
+        return machineDao.queryMachineItem(query);
     }
 
 }

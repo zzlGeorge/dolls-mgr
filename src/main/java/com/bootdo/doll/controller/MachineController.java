@@ -1,14 +1,23 @@
 package com.bootdo.doll.controller;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.common.utils.StringUtils;
+import com.bootdo.doll.constant.DollReturnCode;
+import com.bootdo.doll.controller.cond.ItemMachineCond;
 import com.bootdo.doll.domain.ItemDO;
+import com.bootdo.doll.service.bo.MachineBO;
+import com.bootdo.doll.validate.CommonValidate;
+import org.activiti.bpmn.converter.parser.ItemDefinitionParser;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,6 +66,18 @@ public class MachineController {
         return pageUtils;
     }
 
+    @ResponseBody
+    @GetMapping("/listMachineItem")
+    @RequiresPermissions("doll:machine:machine")
+    public PageUtils listMachineItem(@RequestParam Map<String, Object> params) {
+        //查询列表数据
+        Query query = new Query(params);
+        List<MachineBO> listMachineItem = machineService.listMachineItem(query);
+        int total = machineService.count(query);
+        PageUtils pageUtils = new PageUtils(listMachineItem, total);
+        return pageUtils;
+    }
+
     @GetMapping("/add")
     @RequiresPermissions("doll:machine:add")
     String add() {
@@ -83,7 +104,18 @@ public class MachineController {
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("doll:machine:add")
-    public R save(MachineDO machine) {
+    public R save(@Valid MachineDO machine, BindingResult bindingResult) {
+        List<String> errorList = new LinkedList<>();
+        if (bindingResult.hasErrors()) {//校验参数错误信息搜集
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorList.add(error.getDefaultMessage());
+            }
+        }
+
+        if (errorList.size() > 0) {
+            return R.error(406, "校验失败", errorList);
+        }
+
         if (machineService.save(machine) > 0) {
             return R.ok();
         }
@@ -99,15 +131,65 @@ public class MachineController {
     @ResponseBody
     @PostMapping("/saveNew")
     @RequiresPermissions("doll:machine:addNew")
-    public R saveNew(@Valid MachineDO machine, @Valid ItemDO item, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return R.error();
+    public R saveNew(@Valid ItemMachineCond cond, BindingResult bindingResult) {
+
+        //biz_id 必须在 item_weight 表里面有 item_id 对应
+
+        ItemDO item = getItemDO(cond);
+        MachineDO machine = getMachineDO(cond);
+        List<String> errorList = CommonValidate.itemValidate(item, bindingResult);
+
+        if (errorList.size() > 0) {
+            return R.error(406, "校验失败", errorList);
         }
-//        if (machineService.saveNew(machine,item) > 0) {
-//            return R.ok();
-//        }
+
+        if (machineService.saveNew(machine, item) > 0) {
+            return R.ok();
+        }
         return R.error();
     }
+
+    private ItemDO getItemDO(ItemMachineCond cond){
+        ItemDO itemDO = new ItemDO();
+
+        itemDO.setIntro(cond.getIntro());
+        itemDO.setTakeCry(cond.getTakeCry());
+        itemDO.setImgDetail(cond.getImgDetail());
+        itemDO.setImg(cond.getImg());
+        itemDO.setBizId(cond.getBizId());
+        itemDO.setBizType(cond.getBizType());
+        itemDO.setBuyPrice(cond.getBuyPrice());
+        itemDO.setChangeCry(cond.getChangeCry());
+        itemDO.setChangeText(cond.getChangeText());
+        itemDO.setName(cond.getName());
+        itemDO.setPackageName(cond.getPackageName());
+        itemDO.setPk(cond.getPk());
+        itemDO.setRewardPercent(cond.getRewardPercent());
+        itemDO.setTag(cond.getTag());
+        itemDO.setVipLimit(cond.getVipLimit());
+        itemDO.setWeight(cond.getWeight());
+        itemDO.setPrice(cond.getPrice());
+        itemDO.setItemImg(cond.getItemImg());
+        itemDO.setItemType(cond.getItemType());
+
+        return itemDO;
+    }
+
+    private MachineDO getMachineDO(ItemMachineCond cond){
+        MachineDO machineDO = new MachineDO();
+
+        machineDO.setChatRoom(cond.getChatRoom());
+        machineDO.setItemId(cond.getItemId());
+        machineDO.setMachineAddress(cond.getMachineAddress());
+        machineDO.setMachineId(cond.getMachineId());
+        machineDO.setMachineMac(cond.getMachineMac());
+        machineDO.setMachineStatus(cond.getMachineStatus());
+        machineDO.setMainCamera(cond.getMainCamera());
+        machineDO.setSubCamera(cond.getSubCamera());
+
+        return machineDO;
+    }
+
 
     /**
      * 修改
