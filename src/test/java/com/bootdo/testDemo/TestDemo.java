@@ -2,6 +2,9 @@ package com.bootdo.testDemo;
 
 import com.bootdo.common.utils.Query;
 import com.bootdo.doll.dao.MachineDao;
+import com.bootdo.doll.dao.ProbablityDao;
+import com.bootdo.doll.domain.ProbablityDO;
+import com.bootdo.doll.service.bo.GashaponItemPbBO;
 import com.bootdo.doll.service.bo.MachineBO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,13 +29,17 @@ public class TestDemo {
     @Autowired
     private MachineDao machineDao;
 
+    @Autowired
+    private ProbablityDao probablityDao;
+
     @Test
     public void common(){
         Map<String, Object> param = new HashMap<>();
         param.put("offset",0);
         param.put("limit",10);
         Query query = new Query(param);
-        List<MachineBO> machineBOS = machineDao.queryMachineItem(query);
+//        List<MachineBO> machineBOS = machineDao.queryMachineItem(query);
+        List<GashaponItemPbBO> gashaponItemPbBOS = probablityDao.listGashaponItemPb(query);
         System.out.println();
     }
 }

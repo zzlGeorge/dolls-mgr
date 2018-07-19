@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.doll.dao.ProbablityDao">
+
+    <resultMap id="gashapon_item_prob_map" type="com.bootdo.doll.service.bo.GashaponItemPbBO">
+        <id property="bizId" column="biz_id"/>
+        <result property="name" column="name"/>
+        <result property="intro" column="intro"/>
+        <result property="pic" column="pic"/>
+        <result property="subIntro" column="subIntro"/>
+        <collection property="itemProbBOS" javaType="ArrayList"  column="biz_id" ofType="com.bootdo.doll.service.bo.ItemProbBO">
+            <id column="biz_id" property="bizId" javaType="java.lang.Long"/>
+            <result property="img" column="img"/>
+            <result property="intro" column="intro"/>
+            <result property="name" column="name"/>
+            <association property="probablityDO" column="biz_id" javaType="com.bootdo.doll.domain.ProbablityDO"
+                         select="get"/>
+        </collection>
+    </resultMap>
+
+    <select id="get" resultType="com.bootdo.doll.domain.ProbablityDO">
+		select `id`,`biz_id`,`item_id`,`probability`,`count`,`level`,`item_price`,`gmt_create`,`gmt_modify` from zba_probablity where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.bootdo.doll.domain.ProbablityDO">
+        select `id`,`biz_id`,`item_id`,`probability`,`count`,`level`,`item_price`,`gmt_create`,`gmt_modify` from
+        zba_probablity
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="bizId != null and bizId != ''">and biz_id = #{bizId}</if>
+            <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>
+            <if test="probability != null and probability != ''">and probability = #{probability}</if>
+            <if test="count != null and count != ''">and count = #{count}</if>
+            <if test="level != null and level != ''">and level = #{level}</if>
+            <if test="itemPrice != null and itemPrice != ''">and item_price = #{itemPrice}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from zba_probablity
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="bizId != null and bizId != ''">and biz_id = #{bizId}</if>
+            <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>
+            <if test="probability != null and probability != ''">and probability = #{probability}</if>
+            <if test="count != null and count != ''">and count = #{count}</if>
+            <if test="level != null and level != ''">and level = #{level}</if>
+            <if test="itemPrice != null and itemPrice != ''">and item_price = #{itemPrice}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+        </where>
+    </select>
+
+    <select id="listGashaponItemPb" resultMap="gashapon_item_prob_map">
+		  SELECT
+            g.pic,
+            g.`name`,
+            g.sub_intro,
+            i.img,
+            i.`name`,
+            i.intro,
+            p.*
+        FROM
+            zba_probablity p
+            LEFT JOIN doll_gashapon g ON p.biz_id = g.biz_id
+            LEFT JOIN doll_item i ON p.item_id = i.biz_id
+	</select>
+
+    <insert id="save" parameterType="com.bootdo.doll.domain.ProbablityDO" useGeneratedKeys="true" keyProperty="id">
+		insert into zba_probablity
+		(
+			`biz_id`, 
+			`item_id`, 
+			`probability`, 
+			`count`, 
+			`level`, 
+			`item_price`, 
+			`gmt_create`, 
+			`gmt_modify`
+		)
+		values
+		(
+			#{bizId}, 
+			#{itemId}, 
+			#{probability}, 
+			#{count}, 
+			#{level}, 
+			#{itemPrice}, 
+			#{gmtCreate}, 
+			#{gmtModify}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.bootdo.doll.domain.ProbablityDO">
+        update zba_probablity
+        <set>
+            <if test="bizId != null">`biz_id` = #{bizId},</if>
+            <if test="itemId != null">`item_id` = #{itemId},</if>
+            <if test="probability != null">`probability` = #{probability},</if>
+            <if test="count != null">`count` = #{count},</if>
+            <if test="level != null">`level` = #{level},</if>
+            <if test="itemPrice != null">`item_price` = #{itemPrice},</if>
+            <if test="gmtCreate != null">`gmt_create` = #{gmtCreate},</if>
+            <if test="gmtModify != null">`gmt_modify` = #{gmtModify}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from zba_probablity where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from zba_probablity where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
