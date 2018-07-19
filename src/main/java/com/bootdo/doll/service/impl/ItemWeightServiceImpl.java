@@ -1,9 +1,11 @@
 package com.bootdo.doll.service.impl;
 
+import com.bootdo.common.utils.Query;
 import com.bootdo.common.utils.R;
 import com.bootdo.doll.constant.DollReturnCode;
 import com.bootdo.doll.dao.ItemDao;
 import com.bootdo.doll.domain.ItemDO;
+import com.bootdo.doll.service.bo.ItemWeightBO;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,6 +82,11 @@ public class ItemWeightServiceImpl implements ItemWeightService {
     @Override
     public int batchRemove(Long[] ids) {
         return itemWeightDao.batchRemove(ids);
+    }
+
+    @Override
+    public List<ItemWeightBO> queryItemAndWeight(Query query) {
+        return itemWeightDao.queryItemAndWeight(query);
     }
 
 }

@@ -1,9 +1,12 @@
 package com.bootdo.doll.service.impl;
 
 import com.bootdo.common.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ItemServiceImpl implements ItemService {
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private ItemDao itemDao;
 
@@ -46,7 +51,15 @@ public class ItemServiceImpl implements ItemService {
         if (StringUtils.isEmpty(item.getIntro()))
             item.setIntro("这个物品还没有描述哦~");
         item.setGmtCreate(new Date());
-        return itemDao.save(item);
+
+        int res = 0;
+        try {
+            res = itemDao.save(item);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
+        return res;
     }
 
     @Override

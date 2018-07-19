@@ -28,8 +28,8 @@ function load() {
                 //search : true, // 是否显示搜索框
                 showColumns: false, // 是否显示内容下拉框（选择显示的列）
 
-                detailView:true,
-                detailFormatter:function(index, row){
+                detailView: true,
+                detailFormatter: function (index, row) {
                     var html = [];
                     var item = row['item'];
                     $.each(item, function (key, value) {
@@ -65,6 +65,21 @@ function load() {
                     {
                         field: 'itemId',
                         title: '产品bizId'
+                    },
+                    {
+                        field: 'item',
+                        title: '产品名称',
+                        formatter: function (value, row, index) {
+                            return value['name'];
+                        }
+                    },
+                    {
+                        field: 'item',
+                        title: '产品图片',
+                        formatter: function (value, row, index) {
+                            return '<img src="' + CONSTANT.PIC_SERVER_URL + value['img'] + '.png" ' +
+                                ' alt="' + value['name'] + '" width="100" height="100" />';
+                        }
                     },
                     {
                         field: 'machineStatus',

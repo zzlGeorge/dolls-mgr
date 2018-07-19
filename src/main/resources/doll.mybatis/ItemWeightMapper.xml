@@ -3,6 +3,13 @@
 
 <mapper namespace="com.bootdo.doll.dao.ItemWeightDao">
 
+    <resultMap id="item_weight_map" type="com.bootdo.doll.service.bo.ItemWeightBO">
+        <association property="itemWeightDO" column="id" javaType="com.bootdo.doll.domain.ItemWeightDO"
+                     select="com.bootdo.doll.dao.ItemWeightDao.get"/>
+        <association property="itemDO" column="biz_id" javaType="com.bootdo.doll.domain.ItemDO"
+                     select="com.bootdo.doll.dao.ItemDao.get"/>
+    </resultMap>
+
     <select id="get" resultType="com.bootdo.doll.domain.ItemWeightDO">
 		select `id`,`item_id`,`zhua_zhua`,`sui_shen`,`zai_jia`,`ke_ai`,`ku_hei`,`ding_dong`,`chao_ren`,`gmt_create`,`gmt_modify` from doll_item_weight where id = #{value}
 	</select>
@@ -11,6 +18,38 @@
         select
         `id`,`item_id`,`zhua_zhua`,`sui_shen`,`zai_jia`,`ke_ai`,`ku_hei`,`ding_dong`,`chao_ren`,`gmt_create`,`gmt_modify`
         from doll_item_weight
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>
+            <if test="zhuaZhua != null and zhuaZhua != ''">and zhua_zhua = #{zhuaZhua}</if>
+            <if test="suiShen != null and suiShen != ''">and sui_shen = #{suiShen}</if>
+            <if test="zaiJia != null and zaiJia != ''">and zai_jia = #{zaiJia}</if>
+            <if test="keAi != null and keAi != ''">and ke_ai = #{keAi}</if>
+            <if test="kuHei != null and kuHei != ''">and ku_hei = #{kuHei}</if>
+            <if test="dingDong != null and dingDong != ''">and ding_dong = #{dingDong}</if>
+            <if test="chaoRen != null and chaoRen != ''">and chao_ren = #{chaoRen}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryItemAndWeight" resultMap="item_weight_map">
+        select
+        w.*,
+        `biz_id`,`item_type`,`package_name`,`img`,`img_detail`,`item_img`,`name`,`intro`,`change_text`,`take_cry`,`change_cry`,`buy_price`,`price`,`tag`,`reward_percent`,`weight`,`biz_type`,`vip_limit`,`pk`
+        from doll_item_weight w
+        left join doll_item i on w.item_id=i.biz_id
         <where>
             <if test="id != null and id != ''">and id = #{id}</if>
             <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>

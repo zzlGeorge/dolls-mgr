@@ -8,6 +8,7 @@ import com.bootdo.common.utils.HttpServletUtils;
 import com.bootdo.common.utils.R;
 import com.bootdo.common.utils.ShiroUtils;
 import com.bootdo.system.domain.UserDO;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -42,12 +44,18 @@ public class BDExceptionHandler {
         r.put("msg", e.getMessage());
         return r;
     }
-//
-//    @ExceptionHandler(DuplicateKeyException.class)
-//    public R handleDuplicateKeyException(DuplicateKeyException e) {
+
+    //    @ExceptionHandler(SQLException.class)
+//    public R handleCommonException(SQLException e) {
 //        logger.error(e.getMessage(), e);
 //        return R.error("数据库中已存在该记录");
 //    }
+//
+    @ExceptionHandler(DuplicateKeyException.class)
+    public R handleDuplicateKeyException(DuplicateKeyException e) {
+        logger.error(e.getMessage(), e);
+        return R.error("数据库中已存在该记录，具体错误：" + e.getMessage());
+    }
 //
 //    @ExceptionHandler(org.springframework.web.servlet.NoHandlerFoundException.class)
 //    public R noHandlerFoundException(org.springframework.web.servlet.NoHandlerFoundException e) {

@@ -1,10 +1,12 @@
 package com.bootdo.doll.dao;
 
+import com.bootdo.common.utils.Query;
 import com.bootdo.doll.domain.ItemWeightDO;
 
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.doll.service.bo.ItemWeightBO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -29,4 +31,6 @@ public interface ItemWeightDao {
 	int remove(Long id);
 	
 	int batchRemove(Long[] ids);
+
+	List<ItemWeightBO> queryItemAndWeight(Query query);
 }

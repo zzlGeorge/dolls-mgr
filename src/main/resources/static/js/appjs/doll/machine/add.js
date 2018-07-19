@@ -30,7 +30,10 @@ function save() {
                 parent.layer.close(index);
 
             } else {
-                parent.layer.alert(handleValidate(data));
+                if (data.errorList)
+                    parent.layer.alert(handleValidate(data));
+                else
+                    parent.layer.alert(data.msg);
             }
 
         }
@@ -56,7 +59,10 @@ function saveNew() {
                 parent.layer.close(index);
 
             } else {
-                parent.layer.alert(handleValidate(data));
+                if (data.errorList)
+                    parent.layer.alert(handleValidate(data));
+                else
+                    parent.layer.alert(data.msg);
             }
 
         }

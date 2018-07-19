@@ -3,6 +3,7 @@ package com.bootdo.doll.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.doll.service.bo.ItemWeightBO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -48,6 +49,24 @@ public class ItemWeightController {
         List<ItemWeightDO> itemWeightList = itemWeightService.list(query);
         int total = itemWeightService.count(query);
         PageUtils pageUtils = new PageUtils(itemWeightList, total);
+        return pageUtils;
+    }
+
+    /**
+     * 列出产品和权重数据
+     *
+     * @param params
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/listItemWeight")
+    @RequiresPermissions("doll:itemWeight:itemWeight")
+    public PageUtils listItemWeight(@RequestParam Map<String, Object> params) {
+        //查询列表数据
+        Query query = new Query(params);
+        List<ItemWeightBO> itemWeightBOList = itemWeightService.queryItemAndWeight(query);
+        int total = itemWeightService.count(query);
+        PageUtils pageUtils = new PageUtils(itemWeightBOList, total);
         return pageUtils;
     }
 

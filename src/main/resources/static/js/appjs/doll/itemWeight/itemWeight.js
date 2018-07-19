@@ -1,4 +1,8 @@
 var prefix = "/doll/itemWeight"
+
+var dataView = {};
+
+
 $(function () {
     load();
 });
@@ -8,7 +12,8 @@ function load() {
         .bootstrapTable(
             {
                 method: 'get', // 服务器数据的请求方式 get or post
-                url: prefix + "/list", // 服务器数据的加载地址
+                // url: prefix + "/list", // 服务器数据的加载地址
+                url: prefix + "/listItemWeight",
                 //	showRefresh : true,
                 //	showToggle : true,
                 //	showColumns : true,
@@ -49,6 +54,21 @@ function load() {
                     {
                         field: 'itemId',
                         title: '产品bizId'
+                    },
+                    {
+                        field: 'itemDO',
+                        title: '产品名称',
+                        formatter: function (value, row, index) {
+                            return value['name'];
+                        }
+                    },
+                    {
+                        field: 'itemDO',
+                        title: '产品图片',
+                        formatter: function (value, row, index) {
+                            return '<img src="' + CONSTANT.PIC_SERVER_URL + value['img'] + '.png" ' +
+                                ' alt="' + value['name'] + '" width="100" height="100" />';
+                        }
                     },
                     {
                         field: 'zhuaZhua',
@@ -102,7 +122,23 @@ function load() {
                                 + '\')"><i class="fa fa-key"></i></a> ';
                             return e + d;
                         }
-                    }]
+                    }],
+                responseHandler: function (res) {
+                    dataView['total'] = res.total;
+
+                    var oldRows = res.rows;
+                    var rows = [];
+                    var obj;
+                    for (var i = 0; i < oldRows.length; i++) {
+                        obj = oldRows[i]['itemWeightDO'];
+                        obj['itemDO'] = oldRows[i]['itemDO'];
+                        rows.push(obj);
+                    }
+
+                    dataView['rows'] = rows;
+
+                    return dataView;
+                }
             });
 }
 

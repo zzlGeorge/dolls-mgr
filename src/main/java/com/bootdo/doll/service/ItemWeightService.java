@@ -1,7 +1,9 @@
 package com.bootdo.doll.service;
 
+import com.bootdo.common.utils.Query;
 import com.bootdo.common.utils.R;
 import com.bootdo.doll.domain.ItemWeightDO;
+import com.bootdo.doll.service.bo.ItemWeightBO;
 
 import java.util.List;
 import java.util.Map;
@@ -26,4 +28,10 @@ public interface ItemWeightService {
     int remove(Long id);
 
     int batchRemove(Long[] ids);
+
+    /**
+     * @param query
+     * @return
+     */
+    List<ItemWeightBO> queryItemAndWeight(Query query);
 }
