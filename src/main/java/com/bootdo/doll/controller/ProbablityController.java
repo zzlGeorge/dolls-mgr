@@ -3,6 +3,8 @@ package com.bootdo.doll.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.doll.service.bo.GashaponItemPbBO;
+import com.bootdo.doll.service.bo.ItemProbBO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -50,6 +52,37 @@ public class ProbablityController {
         List<ProbablityDO> probablityList = probablityService.list(query);
         int total = probablityService.count(query);
         PageUtils pageUtils = new PageUtils(probablityList, total);
+        return pageUtils;
+    }
+
+    /**
+     * 列出商品概率数据
+     *
+     * @param params
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/listItemProb")
+    @RequiresPermissions("doll:probablity:probablity")
+    public PageUtils listItemProb(@RequestParam Map<String, Object> params) {
+        //查询列表数据
+        Query query = new Query(params);
+        List<ItemProbBO> itemProbBOList = probablityService.listItemProb(query);
+        int total = probablityService.count(query);
+        PageUtils pageUtils = new PageUtils(itemProbBOList, total);
+        return pageUtils;
+    }
+
+    /** 存在问题，服务端分页无法完成 */
+    @ResponseBody
+    @GetMapping("/listGashaponItemPb")
+    @RequiresPermissions("doll:probablity:probablity")
+    public PageUtils listGashaponItemPb(@RequestParam Map<String, Object> params) {
+        //查询列表数据
+        Query query = new Query(params);
+        List<GashaponItemPbBO> gashaponItemPb = probablityService.listGashaponItemPb(query);
+        int total = probablityService.countGashaponItemPb(query);
+        PageUtils pageUtils = new PageUtils(gashaponItemPb, total);
         return pageUtils;
     }
 

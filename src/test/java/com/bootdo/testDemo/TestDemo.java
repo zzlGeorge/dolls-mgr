@@ -5,6 +5,7 @@ import com.bootdo.doll.dao.MachineDao;
 import com.bootdo.doll.dao.ProbablityDao;
 import com.bootdo.doll.domain.ProbablityDO;
 import com.bootdo.doll.service.bo.GashaponItemPbBO;
+import com.bootdo.doll.service.bo.ItemProbBO;
 import com.bootdo.doll.service.bo.MachineBO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +40,10 @@ public class TestDemo {
         param.put("limit",10);
         Query query = new Query(param);
 //        List<MachineBO> machineBOS = machineDao.queryMachineItem(query);
-        List<GashaponItemPbBO> gashaponItemPbBOS = probablityDao.listGashaponItemPb(query);
+//        List<GashaponItemPbBO> gashaponItemPbBOS = probablityDao.listGashaponItemPb(query);
+
+        List<ItemProbBO> itemProbBOList = probablityDao.listItemProb(query);
+
         System.out.println();
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bootdo.doll.service.bo.GashaponItemPbBO;
+import com.bootdo.doll.service.bo.ItemProbBO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -21,7 +22,10 @@ public interface ProbablityDao {
 	
 	List<ProbablityDO> list(Map<String,Object> map);
 
+	/** 分页数据有问题，无法做服务端分页 */
 	List<GashaponItemPbBO> listGashaponItemPb(Map<String,Object> map);
+
+	int countGashaponItemPb(Map<String,Object> map);
 	
 	int count(Map<String,Object> map);
 	
@@ -32,4 +36,6 @@ public interface ProbablityDao {
 	int remove(Long id);
 	
 	int batchRemove(Long[] ids);
+
+	List<ItemProbBO> listItemProb(Map<String, Object> map);
 }

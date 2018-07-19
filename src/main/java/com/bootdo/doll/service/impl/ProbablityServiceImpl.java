@@ -1,5 +1,8 @@
 package com.bootdo.doll.service.impl;
 
+import com.bootdo.common.utils.Query;
+import com.bootdo.doll.service.bo.GashaponItemPbBO;
+import com.bootdo.doll.service.bo.ItemProbBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +54,20 @@ public class ProbablityServiceImpl implements ProbablityService {
 	public int batchRemove(Long[] ids){
 		return probablityDao.batchRemove(ids);
 	}
-	
+
+    @Override
+    public List<GashaponItemPbBO> listGashaponItemPb(Map<String, Object> map) {
+        return probablityDao.listGashaponItemPb(map);
+    }
+
+	@Override
+	public int countGashaponItemPb(Map<String, Object> map) {
+		return probablityDao.countGashaponItemPb(map);
+	}
+
+	@Override
+	public List<ItemProbBO> listItemProb(Map<String, Object> map) {
+		return probablityDao.listItemProb(map);
+	}
+
 }

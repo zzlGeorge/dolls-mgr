@@ -4,16 +4,17 @@
 <mapper namespace="com.bootdo.doll.dao.ProbablityDao">
 
     <resultMap id="gashapon_item_prob_map" type="com.bootdo.doll.service.bo.GashaponItemPbBO">
-        <id property="bizId" column="biz_id"/>
-        <result property="name" column="name"/>
-        <result property="intro" column="intro"/>
+        <id property="gashaponBizId" column="gashaponBizId"/>
+        <result property="gashaponName" column="gashaponName"/>
+        <result property="gashaponIntro" column="gashaponIntro"/>
         <result property="pic" column="pic"/>
         <result property="subIntro" column="subIntro"/>
-        <collection property="itemProbBOS" javaType="ArrayList"  column="biz_id" ofType="com.bootdo.doll.service.bo.ItemProbBO">
-            <id column="biz_id" property="bizId" javaType="java.lang.Long"/>
+        <collection property="itemProbBOS" javaType="ArrayList" column="itemBizId"
+                    ofType="com.bootdo.doll.service.bo.ItemProbBO">
+            <id column="itemBizId" property="itemBizId" javaType="java.lang.Long"/>
             <result property="img" column="img"/>
-            <result property="intro" column="intro"/>
-            <result property="name" column="name"/>
+            <result property="itemIntro" column="itemIntro"/>
+            <result property="itemName" column="itemName"/>
             <association property="probablityDO" column="biz_id" javaType="com.bootdo.doll.domain.ProbablityDO"
                          select="get"/>
         </collection>
@@ -66,19 +67,104 @@
     </select>
 
     <select id="listGashaponItemPb" resultMap="gashapon_item_prob_map">
-		  SELECT
-            g.pic,
-            g.`name`,
-            g.sub_intro,
-            i.img,
-            i.`name`,
-            i.intro,
-            p.*
+        SELECT
+        g.biz_id gashaponBizId,
+        g.pic,
+        g.`name` gashaponName,
+        g.intro gashaponIntro,
+        g.sub_intro,
+        i.biz_id itemBizId,
+        i.img,
+        i.`name` itemName,
+        i.intro itemIntro,
+        p.*
         FROM
-            zba_probablity p
-            LEFT JOIN doll_gashapon g ON p.biz_id = g.biz_id
-            LEFT JOIN doll_item i ON p.item_id = i.biz_id
-	</select>
+        zba_probablity p
+        LEFT JOIN doll_gashapon g ON p.biz_id = g.biz_id
+        LEFT JOIN doll_item i ON p.item_id = i.biz_id
+        <where>
+            <if test="bizId != null and bizId != ''">and p.biz_id = #{bizId}</if>
+            <if test="itemId != null and itemId != ''">and p.item_id = #{itemId}</if>
+            <if test="probability != null and probability != ''">and p.probability = #{probability}</if>
+            <if test="count != null and count != ''">and p.count = #{count}</if>
+            <if test="level != null and level != ''">and p.level = #{level}</if>
+            <if test="itemPrice != null and itemPrice != ''">and p.item_price = #{itemPrice}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and p.gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and p.gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by p.id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="countGashaponItemPb" resultType="int">
+        SELECT
+        count( * )
+        FROM
+        (
+        SELECT DISTINCT p.biz_id FROM zba_probablity p
+        <where>
+            <if test="bizId != null and bizId != ''">and p.biz_id = #{bizId}</if>
+            <if test="itemId != null and itemId != ''">and p.item_id = #{itemId}</if>
+            <if test="probability != null and probability != ''">and p.probability = #{probability}</if>
+            <if test="count != null and count != ''">and p.count = #{count}</if>
+            <if test="level != null and level != ''">and p.level = #{level}</if>
+            <if test="itemPrice != null and itemPrice != ''">and p.item_price = #{itemPrice}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and p.gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and p.gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by p.id desc
+            </otherwise>
+        </choose>
+        ) e
+    </select>
+
+    <select id="listItemProb" resultType="com.bootdo.doll.service.bo.ItemProbBO">
+        SELECT
+        i.biz_id itemBizId,
+        i.img,
+        i.intro itemIntro,
+        i.`name` itemName,
+        p.*
+        FROM
+        zba_probablity p
+        LEFT JOIN doll_item i ON p.item_id = i.biz_id
+        <where>
+            <if test="id != null and id != ''">and p.id = #{id}</if>
+            <if test="bizId != null and bizId != ''">and p.biz_id = #{bizId}</if>
+            <if test="itemId != null and itemId != ''">and p.item_id = #{itemId}</if>
+            <if test="probability != null and probability != ''">and p.probability = #{probability}</if>
+            <if test="count != null and count != ''">and p.count = #{count}</if>
+            <if test="level != null and level != ''">and p.level = #{level}</if>
+            <if test="itemPrice != null and itemPrice != ''">and p.item_price = #{itemPrice}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and p.gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and p.gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
 
     <insert id="save" parameterType="com.bootdo.doll.domain.ProbablityDO" useGeneratedKeys="true" keyProperty="id">
 		insert into zba_probablity

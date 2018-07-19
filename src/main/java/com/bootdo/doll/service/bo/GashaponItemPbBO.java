@@ -10,13 +10,12 @@ import java.util.List;
  * @date 2018/7/19
  **/
 public class GashaponItemPbBO {
-//    private GashaponDO gashaponDO;
 
-    private Long bizId;
+    private Long gashaponBizId;
     //扭蛋机的名称
-    private String name;
+    private String gashaponName;
     //扭蛋机的描述
-    private String intro;
+    private String gashaponIntro;
     //扭蛋机的子描述，第二级别的描述
     private String subIntro;
     //扭蛋机的图片
@@ -24,28 +23,28 @@ public class GashaponItemPbBO {
 
     private List<ItemProbBO> itemProbBOS;
 
-    public Long getBizId() {
-        return bizId;
+    public Long getGashaponBizId() {
+        return gashaponBizId;
     }
 
-    public void setBizId(Long bizId) {
-        this.bizId = bizId;
+    public void setGashaponBizId(Long gashaponBizId) {
+        this.gashaponBizId = gashaponBizId;
     }
 
-    public String getName() {
-        return name;
+    public String getGashaponName() {
+        return gashaponName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGashaponName(String gashaponName) {
+        this.gashaponName = gashaponName;
     }
 
-    public String getIntro() {
-        return intro;
+    public String getGashaponIntro() {
+        return gashaponIntro;
     }
 
-    public void setIntro(String intro) {
-        this.intro = intro;
+    public void setGashaponIntro(String gashaponIntro) {
+        this.gashaponIntro = gashaponIntro;
     }
 
     public String getSubIntro() {
