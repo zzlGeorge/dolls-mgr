@@ -5,9 +5,9 @@
 
     <resultMap id="item_weight_map" type="com.bootdo.doll.service.bo.ItemWeightBO">
         <association property="itemWeightDO" column="id" javaType="com.bootdo.doll.domain.ItemWeightDO"
-                     select="com.bootdo.doll.dao.ItemWeightDao.get"/>
+                     select="get"/>
         <association property="itemDO" column="biz_id" javaType="com.bootdo.doll.domain.ItemDO"
-                     select="com.bootdo.doll.dao.ItemDao.get"/>
+                     resultMap="com.bootdo.doll.dao.ItemDao.itemMap"/>
     </resultMap>
 
     <select id="get" resultType="com.bootdo.doll.domain.ItemWeightDO">

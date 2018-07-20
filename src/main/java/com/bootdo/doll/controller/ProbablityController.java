@@ -1,14 +1,17 @@
 package com.bootdo.doll.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.bootdo.doll.service.bo.GashaponItemPbBO;
 import com.bootdo.doll.service.bo.ItemProbBO;
+import com.bootdo.doll.validate.CommonValidate;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +25,8 @@ import com.bootdo.doll.service.ProbablityService;
 import com.bootdo.common.utils.PageUtils;
 import com.bootdo.common.utils.Query;
 import com.bootdo.common.utils.R;
+
+import javax.validation.Valid;
 
 /**
  * 随机概率表
@@ -73,7 +78,9 @@ public class ProbablityController {
         return pageUtils;
     }
 
-    /** 存在问题，服务端分页无法完成 */
+    /**
+     * 存在问题，服务端分页无法完成
+     */
     @ResponseBody
     @GetMapping("/listGashaponItemPb")
     @RequiresPermissions("doll:probablity:probablity")
@@ -106,7 +113,13 @@ public class ProbablityController {
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("doll:probablity:add")
-    public R save(ProbablityDO probablity) {
+    public R save(@Valid ProbablityDO probablity, BindingResult bindingResult) {
+        //校验错误搜集
+        List<String> errorList = CommonValidate.beanValidate(new ArrayList<>(), bindingResult);
+        if (errorList.size() > 0) {
+            return R.error(406, "校验失败", errorList);
+        }
+
         if (probablityService.save(probablity) > 0) {
             return R.ok();
         }

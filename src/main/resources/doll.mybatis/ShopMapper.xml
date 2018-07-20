@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.doll.dao.ShopDao">
+
+    <resultMap id="shopMap" type="com.bootdo.doll.domain.ShopDO">
+        <id property="id" column="id"/>
+        <result property="weight" column="weight"/>
+        <result property="tag" column="tag"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="changable" column="changable"/>
+        <result property="changePoint" column="change_point"/>
+        <result property="gmtModify" column="gmt_modify"/>
+        <result property="itemId" column="item_id"/>
+        <result property="purchasable" column="purchasable"/>
+        <result property="purchasePoint" column="purchase_point"/>
+    </resultMap>
+
+    <resultMap id="itemShopMap" type="com.bootdo.doll.service.bo.ItemShopBO">
+        <association property="item" column="biz_id" resultMap="com.bootdo.doll.dao.ItemDao.itemMap"/>
+        <association property="shop" column="item_id" resultMap="shopMap"/>
+    </resultMap>
+
+    <select id="get" resultType="com.bootdo.doll.domain.ShopDO">
+		select `id`,`item_id`,`tag`,`weight`,`change_point`,`purchase_point`,`purchasable`,`changable`,`gmt_create`,`gmt_modify` from doll_shop where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.bootdo.doll.domain.ShopDO">
+        select
+        `id`,`item_id`,`tag`,`weight`,`change_point`,`purchase_point`,`purchasable`,`changable`,`gmt_create`,`gmt_modify`
+        from doll_shop
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>
+            <if test="tag != null and tag != ''">and tag = #{tag}</if>
+            <if test="weight != null and weight != ''">and weight = #{weight}</if>
+            <if test="changePoint != null and changePoint != ''">and change_point = #{changePoint}</if>
+            <if test="purchasePoint != null and purchasePoint != ''">and purchase_point = #{purchasePoint}</if>
+            <if test="purchasable != null and purchasable != ''">and purchasable = #{purchasable}</if>
+            <if test="changable != null and changable != ''">and changable = #{changable}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from doll_shop
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>
+            <if test="tag != null and tag != ''">and tag = #{tag}</if>
+            <if test="weight != null and weight != ''">and weight = #{weight}</if>
+            <if test="changePoint != null and changePoint != ''">and change_point = #{changePoint}</if>
+            <if test="purchasePoint != null and purchasePoint != ''">and purchase_point = #{purchasePoint}</if>
+            <if test="purchasable != null and purchasable != ''">and purchasable = #{purchasable}</if>
+            <if test="changable != null and changable != ''">and changable = #{changable}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+        </where>
+    </select>
+
+    <select id="listShopItem" resultMap="itemShopMap">
+        SELECT
+        *
+        FROM
+        doll_shop s
+        LEFT JOIN doll_item i ON s.item_id = i.biz_id
+        <where>
+            <if test="itemId != null and itemId != ''">and s.item_id = #{itemId}</if>
+            <if test="tag != null and tag != ''">and s.tag = #{tag}</if>
+            <if test="weight != null and weight != ''">and s.weight = #{weight}</if>
+            <if test="changePoint != null and changePoint != ''">and s.change_point = #{changePoint}</if>
+            <if test="purchasePoint != null and purchasePoint != ''">and s.purchase_point = #{purchasePoint}</if>
+            <if test="purchasable != null and purchasable != ''">and s.purchasable = #{purchasable}</if>
+            <if test="changable != null and changable != ''">and s.changable = #{changable}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and s.gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and s.gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by s.id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.doll.domain.ShopDO" useGeneratedKeys="true" keyProperty="id">
+		insert into doll_shop
+		(
+			`item_id`, 
+			`tag`, 
+			`weight`, 
+			`change_point`, 
+			`purchase_point`, 
+			`purchasable`, 
+			`changable`, 
+			`gmt_create`, 
+			`gmt_modify`
+		)
+		values
+		(
+			#{itemId}, 
+			#{tag}, 
+			#{weight}, 
+			#{changePoint}, 
+			#{purchasePoint}, 
+			#{purchasable}, 
+			#{changable}, 
+			#{gmtCreate}, 
+			#{gmtModify}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.bootdo.doll.domain.ShopDO">
+        update doll_shop
+        <set>
+            <if test="itemId != null">`item_id` = #{itemId},</if>
+            <if test="tag != null">`tag` = #{tag},</if>
+            <if test="weight != null">`weight` = #{weight},</if>
+            <if test="changePoint != null">`change_point` = #{changePoint},</if>
+            <if test="purchasePoint != null">`purchase_point` = #{purchasePoint},</if>
+            <if test="purchasable != null">`purchasable` = #{purchasable},</if>
+            <if test="changable != null">`changable` = #{changable},</if>
+            <if test="gmtCreate != null">`gmt_create` = #{gmtCreate},</if>
+            <if test="gmtModify != null">`gmt_modify` = #{gmtModify}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from doll_shop where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from doll_shop where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

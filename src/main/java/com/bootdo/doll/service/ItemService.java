@@ -27,4 +27,6 @@ public interface ItemService {
 	int remove(Long id);
 	
 	int batchRemove(Long[] ids);
+
+    List<ItemDO> listAllItems(Map<String, Object> params);
 }

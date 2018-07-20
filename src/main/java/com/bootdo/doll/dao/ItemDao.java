@@ -30,4 +30,5 @@ public interface ItemDao {
 	
 	int batchRemove(Long[] ids);
 
+    List<ItemDO> listAllItems(Map<String, Object> params);
 }

@@ -1,4 +1,4 @@
-var prefix = "/doll/item"
+var prefix = "/doll/shop"
 $(function () {
     load();
 });
@@ -8,7 +8,8 @@ function load() {
         .bootstrapTable(
             {
                 method: 'get', // 服务器数据的请求方式 get or post
-                url: prefix + "/list", // 服务器数据的加载地址
+                // url: prefix + "/list", // 服务器数据的加载地址
+                url: prefix + "/listShopItem", //
                 //	showRefresh : true,
                 //	showToggle : true,
                 //	showColumns : true,
@@ -51,88 +52,62 @@ function load() {
                         title: 'ID'
                     },
                     {
-                        field: 'bizId',
-                        title: '产品编号'
+                        field: 'itemId',
+                        title: '商品编号'
                     },
                     {
-                        field: 'itemType',
-                        title: '类型'
-                    },
-                    {
-                        field: 'packageName',
-                        title: '包名'
+                        field: 'name',
+                        title: '商品名称'
                     },
                     {
                         field: 'img',
-                        title: '图片名'
-                    },
-                    {
-                        field: 'imgDetail',
-                        title: '图片分辨率'
-                    },
-                    {
-                        field: 'itemImg',
-                        title: '图片内容',
+                        title: '商品图片',
                         formatter: function (value, row, index) {
                             return '<img src="' + CONSTANT.PIC_SERVER_URL + row['img'] + '.png" ' +
                                 ' alt="' + row['name'] + '" width="100" height="100" />';
                         }
                     },
                     {
-                        field: 'name',
-                        title: '产品名称'
-                    },
-                    {
-                        field: 'intro',
-                        title: '产品简介'
-                    },
-                    {
-                        field: 'changeText',
-                        title: '兑换值'
-                    },
-                    {
-                        field: 'takeCry',
-                        title: 'takeCry'
-                    },
-                    {
-                        field: 'changeCry',
-                        title: 'changeCry'
-                    },
-                    {
                         field: 'buyPrice',
-                        title: '购价'
-                    },
-                    {
-                        field: 'price',
-                        title: '价值'
+                        title: '商品购价'
                     },
                     {
                         field: 'tag',
                         title: '标签'
                     },
                     {
-                        field: 'rewardPercent',
-                        title: '回报百分比'
+                        field: 'weight',
+                        title: '排序权重'
                     },
                     {
-                        field: 'weight',
-                        title: '权重'
+                        field: 'changePoint',
+                        title: '兑换积分'
+                    },
+                    {
+                        field: 'purchasePoint',
+                        title: '需要积分'
+                    },
+                    {
+                        field: 'purchasable',
+                        title: '能否兑换积分',
+                        formatter: function (value, row, index) {
+                            return value == 1 ? '能' : '不能'
+                        }
+                    },
+                    {
+                        field: 'changable',
+                        title: '能否积分兑换商品',
+                        formatter: function (value, row, index) {
+                            return value == 1 ? '能' : '不能'
+                        }
                     },
                     {
                         field: 'gmtCreate',
-                        title: '创建日期'
+                        title: '创建时间'
                     },
                     {
-                        field: 'bizType',
-                        title: '业务类型'
-                    },
-                    {
-                        field: 'vipLimit',
-                        title: '要求的vip级别'
-                    },
-                    {
-                        field: 'pk',
-                        title: 'pk码'
+                        field: 'gmtModify',
+                        title: '修改时间'
                     },
                     {
                         title: '操作',
@@ -140,17 +115,37 @@ function load() {
                         align: 'center',
                         formatter: function (value, row, index) {
                             var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title="编辑" onclick="edit(\''
-                                + row.bizId
+                                + row.id
                                 + '\')"><i class="fa fa-edit"></i></a> ';
                             var d = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
-                                + row.bizId
+                                + row.id
                                 + '\')"><i class="fa fa-remove"></i></a> ';
                             var f = '<a class="btn btn-success btn-sm" href="#" title="备用"  mce_href="#" onclick="resetPwd(\''
-                                + row.bizId
+                                + row.id
                                 + '\')"><i class="fa fa-key"></i></a> ';
                             return e + d;
                         }
-                    }]
+                    }],
+                responseHandler: function (res) {
+                    var dataView = {};
+                    dataView['total'] = res.total;
+
+                    var oldRows = res.rows;
+                    var rows = [];
+                    var shop, item;
+                    for (var i = 0; i < oldRows.length; i++) {
+                        shop = oldRows[i]['shop'];
+                        item = oldRows[i]['item'];
+                        shop['img'] = item['img'];
+                        shop['name'] = item['name'];
+                        shop['buyPrice'] = item['buyPrice'];
+                        rows.push(shop);
+                    }
+
+                    dataView['rows'] = rows;
+
+                    return dataView;
+                }
             });
 }
 

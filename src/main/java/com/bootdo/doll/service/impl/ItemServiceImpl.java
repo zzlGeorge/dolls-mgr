@@ -77,4 +77,9 @@ public class ItemServiceImpl implements ItemService {
         return itemDao.batchRemove(ids);
     }
 
+    @Override
+    public List<ItemDO> listAllItems(Map<String, Object> params) {
+        return itemDao.listAllItems(params);
+    }
+
 }

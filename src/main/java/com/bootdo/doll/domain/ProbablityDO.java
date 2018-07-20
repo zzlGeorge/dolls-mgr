@@ -1,5 +1,6 @@
 package com.bootdo.doll.domain;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,16 +19,22 @@ public class ProbablityDO implements Serializable {
 	//
 	private Long id;
 	//业务id
+	@NotNull(message = "bizId不能为空！")
 	private Long bizId;
 	//物品id,如果是金币则为0
+	@NotNull(message = "itemId不能为空！")
 	private Long itemId;
 	//概率
+	@NotNull(message = "概率不能为空！")
 	private Double probability;
 	//个数
+	@NotNull(message = "count不能为空！")
 	private Integer count;
-	//等级。1-最高级别，10连抽出 
+	//等级。1-最高级别，10连抽出
+	@NotNull(message = "level不能为空！")
 	private Integer level;
-	//
+
+	@NotNull(message = "itemPrice不能为空！")
 	private Integer itemPrice;
 	//
 	private Date gmtCreate;

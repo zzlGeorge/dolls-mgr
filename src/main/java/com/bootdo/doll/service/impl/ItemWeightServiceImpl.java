@@ -18,9 +18,11 @@ import java.util.Map;
 import com.bootdo.doll.dao.ItemWeightDao;
 import com.bootdo.doll.domain.ItemWeightDO;
 import com.bootdo.doll.service.ItemWeightService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class ItemWeightServiceImpl implements ItemWeightService {
     @Autowired
     private ItemWeightDao itemWeightDao;

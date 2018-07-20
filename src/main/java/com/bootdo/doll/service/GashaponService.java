@@ -27,4 +27,6 @@ public interface GashaponService {
 	int remove(Long id);
 	
 	int batchRemove(Long[] ids);
+
+    List<GashaponDO> listAll(Map<String, Object> params);
 }

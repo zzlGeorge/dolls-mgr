@@ -55,6 +55,17 @@ public class ItemController {
         return pageUtils;
     }
 
+    @ResponseBody
+    @GetMapping("/listAll")
+    @RequiresPermissions("doll:item:item")
+    public PageUtils listAllItems(@RequestParam Map<String, Object> params) {
+        //查询所有商品
+        List<ItemDO> itemList = itemService.listAllItems(params);
+        PageUtils pageUtils = new PageUtils(itemList, 0);
+        return pageUtils;
+    }
+
+
     @GetMapping("/add")
     @RequiresPermissions("doll:item:add")
     String add() {
@@ -63,7 +74,7 @@ public class ItemController {
 
     @GetMapping("/edit/{id}")
     @RequiresPermissions("doll:item:edit")
-    String edit(@PathVariable("bizId") Long bizId, Model model) {
+    String edit(@PathVariable("id") Long bizId, Model model) {
         ItemDO item = itemService.get(bizId);
         model.addAttribute("item", item);
         return "doll/item/edit";
@@ -75,7 +86,7 @@ public class ItemController {
     @ResponseBody
     @PostMapping("/save")
     @RequiresPermissions("doll:item:add")
-    public R save(@Valid ItemDO item,BindingResult bindingResult) {
+    public R save(@Valid ItemDO item, BindingResult bindingResult) {
 
         List<String> errorList = CommonValidate.itemValidate(item, bindingResult);
 

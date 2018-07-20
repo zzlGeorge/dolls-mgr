@@ -3,6 +3,7 @@ package com.bootdo.doll.validate;
 import com.bootdo.common.utils.StringUtils;
 import com.bootdo.doll.constant.DollReturnCode;
 import com.bootdo.doll.domain.ItemDO;
+import com.bootdo.doll.domain.ProbablityDO;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -26,11 +27,7 @@ public class CommonValidate {
     public static List<String> itemValidate(ItemDO item, BindingResult bindingResult) {
         List<String> errorList = new LinkedList<>();
 
-        if (bindingResult.hasErrors()) {//校验参数错误信息搜集
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errorList.add(error.getDefaultMessage());
-            }
-        }
+        beanValidate(errorList, bindingResult);
 
         //img，item_img 不能重复
         if (StringUtils.equals(item.getImg(), item.getItemImg())) {
@@ -46,6 +43,21 @@ public class CommonValidate {
             errorList.add(DollReturnCode.WARN_VIP_LIMIT_MUST_EXIST.getDescription());
         }
 
+        return errorList;
+    }
+
+    /**
+     * 实体bean校验
+     *
+     * @param bindingResult
+     * @return
+     */
+    public static List<String> beanValidate(List<String> errorList, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {//校验参数错误信息搜集
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorList.add(error.getDefaultMessage());
+            }
+        }
         return errorList;
     }
 

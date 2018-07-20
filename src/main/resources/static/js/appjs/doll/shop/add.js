@@ -1,20 +1,19 @@
 $().ready(function () {
-    // selectItemsLoad();
-    // selectLoad();
+    selectItemsLoad();
     validateRule();
 });
 
 $.validator.setDefaults({
     submitHandler: function () {
-        update();
+        save();
     }
 });
 
-function update() {
+function save() {
     $.ajax({
         cache: true,
         type: "POST",
-        url: "/doll/probablity/update",
+        url: "/doll/shop/save",
         data: $('#signupForm').serialize(),// 你的formid
         async: false,
         error: function (request) {
@@ -28,30 +27,15 @@ function update() {
                 parent.layer.close(index);
 
             } else {
-                parent.layer.alert(data.msg)
+                if (data.errorList)
+                    parent.layer.alert(handleValidate(data));
+                else
+                    parent.layer.alert(data.msg);
             }
 
         }
     });
 
-}
-
-function selectLoad() {
-    var html = "";
-    $.ajax({
-        url: '/doll/gashapon/listAll',
-        success: function (data) {
-            //加载数据
-            var rows = data.rows;
-            for (var i = 0; i < rows.length; i++) {
-                html += '<option value="' + rows[i].bizId + '">' + rows[i].bizId + '- ' + rows[i].name + '</option>'
-            }
-            $("#bizId").append(html);
-            $("#bizId").chosen({
-                maxHeight: 200
-            });
-        }
-    });
 }
 
 function validateRule() {
@@ -64,7 +48,7 @@ function validateRule() {
         },
         messages: {
             name: {
-                required: icon + "请输入名字"
+                required: icon + "请输入姓名"
             }
         }
     })

@@ -53,6 +53,7 @@ public class MachineServiceImpl implements MachineService {
 
     @Override
     public int update(MachineDO machine) {
+        machine.setGmtModify(new Date());
         return machineDao.update(machine);
     }
 

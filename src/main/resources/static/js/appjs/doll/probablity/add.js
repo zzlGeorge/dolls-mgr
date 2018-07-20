@@ -1,4 +1,6 @@
 $().ready(function() {
+    selectLoad();
+    selectItemsLoad();
 	validateRule();
 });
 
@@ -25,13 +27,35 @@ function save() {
 				parent.layer.close(index);
 
 			} else {
-				parent.layer.alert(data.msg)
+                if (data.errorList)
+                    parent.layer.alert(handleValidate(data));
+                else
+                    parent.layer.alert(data.msg);
 			}
 
 		}
 	});
 
 }
+
+function selectLoad() {
+    var html = "";
+    $.ajax({
+        url: '/doll/gashapon/listAll',
+        success: function (data) {
+            //加载数据
+            var rows = data.rows;
+            for (var i = 0; i < rows.length; i++) {
+                html += '<option value="' + rows[i].bizId + '">' + rows[i].bizId + '- ' + rows[i].name + '</option>'
+            }
+            $("#bizId").append(html);
+            $("#bizId").chosen({
+                maxHeight: 200
+            });
+        }
+    });
+}
+
 function validateRule() {
 	var icon = "<i class='fa fa-times-circle'></i> ";
 	$("#signupForm").validate({

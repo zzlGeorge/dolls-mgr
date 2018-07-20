@@ -1,18 +1,19 @@
 $().ready(function() {
-	selectItemsLoad();
+    // selectItemsLoad();
 	validateRule();
 });
 
 $.validator.setDefaults({
 	submitHandler : function() {
-		save();
+		update();
 	}
 });
-function save() {
+function update() {
+	console.info($('#signupForm').serialize());
 	$.ajax({
 		cache : true,
 		type : "POST",
-		url : "/doll/itemWeight/save",
+		url : "/doll/shop/update",
 		data : $('#signupForm').serialize(),// 你的formid
 		async : false,
 		error : function(request) {
@@ -43,7 +44,7 @@ function validateRule() {
 		},
 		messages : {
 			name : {
-				required : icon + "请输入姓名"
+				required : icon + "请输入名字"
 			}
 		}
 	})
