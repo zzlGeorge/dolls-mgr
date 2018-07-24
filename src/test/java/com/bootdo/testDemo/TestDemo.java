@@ -1,5 +1,6 @@
 package com.bootdo.testDemo;
 
+import com.bootdo.common.service.GeneratorService;
 import com.bootdo.common.utils.Query;
 import com.bootdo.doll.dao.MachineDao;
 import com.bootdo.doll.dao.ProbablityDao;
@@ -33,11 +34,14 @@ public class TestDemo {
     @Autowired
     private ProbablityDao probablityDao;
 
+    @Autowired
+    private GeneratorService generatorService;
+
     @Test
-    public void common(){
+    public void common() {
         Map<String, Object> param = new HashMap<>();
-        param.put("offset",0);
-        param.put("limit",10);
+        param.put("offset", 0);
+        param.put("limit", 10);
         Query query = new Query(param);
 //        List<MachineBO> machineBOS = machineDao.queryMachineItem(query);
 //        List<GashaponItemPbBO> gashaponItemPbBOS = probablityDao.listGashaponItemPb(query);
@@ -45,5 +49,20 @@ public class TestDemo {
         List<ItemProbBO> itemProbBOList = probablityDao.listItemProb(query);
 
         System.out.println();
+    }
+
+    /**
+     * 代码生成
+     */
+    @Test
+    public void testGenerate() {
+        generatorService.generatorProjectCode(new String[]{"doll_magic_box", "doll_magic_item", "doll_magic_rule"}, "com.bootdo.doll");
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        String packageName = "com.bootdo.doll";
+        String moduleName = packageName.substring(packageName.lastIndexOf(".") + 1);
+        System.out.println(moduleName);
     }
 }

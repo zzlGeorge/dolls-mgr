@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.doll.dao.MagicItemDao">
+
+    <resultMap id="magicItemMap" type="com.bootdo.doll.domain.MagicItemDO">
+        <id property="id" column="id"/>
+        <result property="itemId" column="item_id"/>
+        <result property="gmtModify" column="gmt_modify"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="price" column="price"/>
+        <result property="boxId" column="box_id"/>
+        <result property="level" column="level"/>
+    </resultMap>
+
+    <resultMap id="magicItemDOMap" type="com.bootdo.doll.service.bo.MagicItemBO">
+        <association property="itemDO" column="biz_id" resultMap="com.bootdo.doll.dao.ItemDao.itemMap"/>
+        <association property="magicItemDO" column="item_id" resultMap="magicItemMap"/>
+    </resultMap>
+
+    <select id="get" resultType="com.bootdo.doll.domain.MagicItemDO">
+		select `id`,`box_id`,`item_id`,`level`,`price`,`gmt_create`,`gmt_modify` from doll_magic_item where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.bootdo.doll.domain.MagicItemDO">
+        select `id`,`box_id`,`item_id`,`level`,`price`,`gmt_create`,`gmt_modify` from doll_magic_item
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="boxId != null and boxId != ''">and box_id = #{boxId}</if>
+            <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>
+            <if test="level != null and level != ''">and level = #{level}</if>
+            <if test="price != null and price != ''">and price = #{price}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from doll_magic_item
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="boxId != null and boxId != ''">and box_id = #{boxId}</if>
+            <if test="itemId != null and itemId != ''">and item_id = #{itemId}</if>
+            <if test="level != null and level != ''">and level = #{level}</if>
+            <if test="price != null and price != ''">and price = #{price}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+        </where>
+    </select>
+
+    <select id="listMagicItems" resultMap="magicItemDOMap">
+        SELECT
+        i.biz_id,
+        i.img,
+        i.intro,
+        i.`name`,
+        i.buy_price,
+        mi.*
+        FROM
+        doll_magic_item mi
+        LEFT JOIN doll_item i ON mi.item_id = i.biz_id
+        <where>
+            <if test="id != null and id != ''">and mi.id = #{id}</if>
+            <if test="boxId != null and boxId != ''">and mi.box_id = #{boxId}</if>
+            <if test="itemId != null and itemId != ''">and mi.item_id = #{itemId}</if>
+            <if test="level != null and level != ''">and mi.level = #{level}</if>
+            <if test="price != null and price != ''">and mi.price = #{price}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and mi.gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and mi.gmt_modify = #{gmtModify}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by mi.id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+    <select id="listMagicBoxInfo" resultType="com.bootdo.doll.service.bo.MagicBoxBO">
+        SELECT
+        mb.*,
+        e.itemCount,
+        e.itemMaxLevel
+        FROM
+        doll_magic_box mb
+        LEFT JOIN ( SELECT mi.box_id, count( mi.id ) itemCount,MAX(mi.`level`) itemMaxLevel FROM doll_magic_item mi
+        GROUP BY mi.box_id ) e ON mb.biz_id = e.box_id
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="bizId != null and bizId != ''">and biz_id = #{bizId}</if>
+            <if test="name != null and name != ''">and name = #{name}</if>
+            <if test="intro != null and intro != ''">and intro = #{intro}</if>
+            <if test="img != null and img != ''">and img = #{img}</if>
+            <if test="price != null and price != ''">and price = #{price}</if>
+            <if test="gmtCreate != null and gmtCreate != ''">and gmt_create = #{gmtCreate}</if>
+            <if test="gmtModify != null and gmtModify != ''">and gmt_modify = #{gmtModify}</if>
+            <if test="weight != null and weight != ''">and weight = #{weight}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.doll.domain.MagicItemDO" useGeneratedKeys="true" keyProperty="id">
+		insert into doll_magic_item
+		(
+			`box_id`, 
+			`item_id`, 
+			`level`, 
+			`price`, 
+			`gmt_create`, 
+			`gmt_modify`
+		)
+		values
+		(
+			#{boxId}, 
+			#{itemId}, 
+			#{level}, 
+			#{price}, 
+			#{gmtCreate}, 
+			#{gmtModify}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.bootdo.doll.domain.MagicItemDO">
+        update doll_magic_item
+        <set>
+            <if test="boxId != null">`box_id` = #{boxId},</if>
+            <if test="itemId != null">`item_id` = #{itemId},</if>
+            <if test="level != null">`level` = #{level},</if>
+            <if test="price != null">`price` = #{price},</if>
+            <if test="gmtCreate != null">`gmt_create` = #{gmtCreate},</if>
+            <if test="gmtModify != null">`gmt_modify` = #{gmtModify}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from doll_magic_item where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from doll_magic_item where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

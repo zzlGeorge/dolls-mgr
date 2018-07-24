@@ -24,13 +24,13 @@ public class Constant {
     public static String LOG_ERROR = "error";
 
     static {
-        String path = Constant.class.getClassLoader().getResource(".").getPath();
+        String path = Constant.class.getClassLoader().getResource("").getPath();
         path = path.substring(1, path.length());
         PROJECT_ROOT_PATH = path;
     }
 
     public static void main(String[] args) {
-        String path = Constant.class.getClassLoader().getResource(".").getPath();
+        String path = Constant.class.getClassLoader().getResource("").getPath();
         path = path.substring(1, path.length());
         System.out.println(path);
     }

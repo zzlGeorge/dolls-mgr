@@ -31,3 +31,24 @@ function selectItemsLoad() {
         }
     });
 }
+
+/**
+ * 列出所有魔法盒下拉框
+ * */
+function selectMagicBoxLoad() {
+    var html = "";
+    $.ajax({
+        url: '/doll/magicBox/listAll',
+        success: function (data) {
+            //加载数据
+            var rows = data.rows;
+            for (var i = 0; i < rows.length; i++) {
+                html += '<option value="' + rows[i].bizId + '">' + rows[i].bizId + '- ' + rows[i].name + '</option>'
+            }
+            $(".magicBox").append(html);
+            $(".magicBox").chosen({
+                maxHeight: 200
+            });
+        }
+    });
+}

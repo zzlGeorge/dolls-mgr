@@ -29,6 +29,9 @@ public enum DollReturnCode {
     ERROR_SHOP_SCORE_CHANGEABLE("00012", "商品积分可兑换但兑换量小于1！", "商品积分可兑换但兑换量小于1"),
     WARN_SHOP_CHANGEABLE_DISCOUNT("00013", "商品积分兑换折损率>30%！", "商品积分兑换折损率>30%"),
     WARN_SHOP_BUY_PRICE_5_LESS("00014", "兑换积分小于购买价格的5倍！", "兑换积分小于购买价格的5倍！"),
+
+    //魔法卡
+    WARN_MAGIC_PRICE_LESS("00015", "魔法卡中的商品价格不得少于doll_item商品价格两倍！", "魔法卡中的商品价格不得少于doll_item商品价格两倍"),
     ;
 
     /**
