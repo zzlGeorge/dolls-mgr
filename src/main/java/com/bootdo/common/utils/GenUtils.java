@@ -10,13 +10,12 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -26,6 +25,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class GenUtils {
 
+    private static Logger logger = Logger.getLogger(GenUtils.class);
 
     public static List<String> getTemplates() {
         List<String> templates = new ArrayList<String>();
@@ -47,14 +47,91 @@ public class GenUtils {
     }
 
     /**
-     * 生成代码
+     * 生成的代码放入zip中
+     *
+     * @param table
+     * @param columns
+     * @param zip
      */
-
-
-    public static void generatorCode(Map<String, String> table,
-                                     List<Map<String, String>> columns, ZipOutputStream zip) {
+    public static void generatorCodeToZip(Map<String, String> table,
+                                          List<Map<String, String>> columns, ZipOutputStream zip) {
         //配置信息
         Configuration config = getConfig();
+
+        TableDO tableDO = getTableDO(table, config, columns);
+
+        VelocityContext context = getContext(tableDO, config);
+
+        for (String template : getTemplates()) {
+            //渲染模板
+            StringWriter sw = new StringWriter();
+            Template tpl = Velocity.getTemplate(template, "UTF-8");
+            tpl.merge(context, sw);
+
+            try {
+                //添加到zip
+                zip.putNextEntry(new ZipEntry(getFileName(template, tableDO.getClassname(), tableDO.getClassName(), config.getString("package").substring(config.getString("package").lastIndexOf(".") + 1))));
+                IOUtils.write(sw.toString(), zip, "UTF-8");
+                IOUtils.closeQuietly(sw);
+                zip.closeEntry();
+            } catch (IOException e) {
+                throw new BDException("渲染模板失败，表名：" + tableDO.getTableName(), e);
+            }
+        }
+
+    }
+
+    /**
+     * 生成的代码放入项目工程文件中
+     *
+     * @param table
+     * @param columns
+     */
+    public static boolean generatorCodeToProject(Map<String, String> table, List<Map<String, String>> columns, String packageName) {
+        //配置信息
+        Configuration config = getConfig();
+
+        TableDO tableDO = getTableDO(table, config, columns);
+
+        VelocityContext context = getContext(tableDO, config);
+
+        for (String template : getTemplates()) {
+            //渲染模板
+            StringWriter sw = new StringWriter();
+            Template tpl = Velocity.getTemplate(template, "UTF-8");
+            tpl.merge(context, sw);
+
+            try {
+                String fileName = getFileName(template, tableDO.getClassname(), tableDO.getClassName(), packageName);
+                FileUtil.createFile(fileName);
+                if (StringUtils.isNotBlank(fileName)) {
+                    File file = new File(fileName);
+                    FileOutputStream fos = new FileOutputStream(file);
+                    IOUtils.write(sw.toString(), fos, "UTF-8");
+                    IOUtils.closeQuietly(sw);
+                    fos.close();
+                } else {
+                    logger.warn("未获取文件路径！");
+                }
+            } catch (IOException e) {
+                throw new BDException("渲染模板失败，表名：" + tableDO.getTableName(), e);
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * 获取表对象属性数据
+     *
+     * @param table
+     * @param config
+     * @param columns
+     * @return
+     */
+    private static TableDO getTableDO(Map<String, String> table, Configuration config,
+                                      List<Map<String, String>> columns) {
         //表信息
         TableDO tableDO = new TableDO();
         tableDO.setTableName(table.get("tableName"));
@@ -96,6 +173,17 @@ public class GenUtils {
             tableDO.setPk(tableDO.getColumns().get(0));
         }
 
+        return tableDO;
+    }
+
+    /**
+     * 获取模板文件上下文
+     *
+     * @param tableDO
+     * @param config
+     * @return
+     */
+    private static VelocityContext getContext(TableDO tableDO, Configuration config) {
         //设置velocity资源加载器
         Properties prop = new Properties();
         prop.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
@@ -114,28 +202,9 @@ public class GenUtils {
         map.put("author", config.getString("author"));
         map.put("email", config.getString("email"));
         map.put("datetime", DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
-        VelocityContext context = new VelocityContext(map);
 
-        //获取模板列表
-        List<String> templates = getTemplates();
-        for (String template : templates) {
-            //渲染模板
-            StringWriter sw = new StringWriter();
-            Template tpl = Velocity.getTemplate(template, "UTF-8");
-            tpl.merge(context, sw);
-
-            try {
-                //添加到zip
-                zip.putNextEntry(new ZipEntry(getFileName(template, tableDO.getClassname(), tableDO.getClassName(), config.getString("package").substring(config.getString("package").lastIndexOf(".") + 1))));
-                IOUtils.write(sw.toString(), zip, "UTF-8");
-                IOUtils.closeQuietly(sw);
-                zip.closeEntry();
-            } catch (IOException e) {
-                throw new BDException("渲染模板失败，表名：" + tableDO.getTableName(), e);
-            }
-        }
+        return new VelocityContext(map);
     }
-
 
     /**
      * 列名转换成Java属性名
@@ -173,7 +242,10 @@ public class GenUtils {
      * 获取文件名
      */
     public static String getFileName(String template, String classname, String className, String packageName) {
-        String packagePath = "main" + File.separator + "java" + File.separator;
+        String packagePath = "src" + File.separator + "main" + File.separator + "java" + File.separator;
+
+        String moduleName = packageName.substring(packageName.lastIndexOf(".") + 1);
+
         //String modulesname=config.getString("packageName");
         if (StringUtils.isNotBlank(packageName)) {
             packagePath += packageName.replace(".", File.separator) + File.separator;
@@ -204,35 +276,35 @@ public class GenUtils {
         }
 
         if (template.contains("Mapper.xml.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "mapper" + File.separator + packageName + File.separator + className + "Mapper.xml";
+            return "src" + File.separator + "main" + File.separator + "resources" + File.separator + "doll.mybatis" + File.separator + className + "Mapper.xml";
         }
 
         if (template.contains("list.html.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "templates" + File.separator
-                    + packageName + File.separator + classname + File.separator + classname + ".html";
+            return "src" + File.separator + "main" + File.separator + "resources" + File.separator + "templates" + File.separator
+                    + moduleName + File.separator + classname + File.separator + classname + ".html";
             //				+ "modules" + File.separator + "generator" + File.separator + className.toLowerCase() + ".html";
         }
         if (template.contains("add.html.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "templates" + File.separator
-                    + packageName + File.separator + classname + File.separator + "add.html";
+            return "src" + File.separator + "main" + File.separator + "resources" + File.separator + "templates" + File.separator
+                    + moduleName + File.separator + classname + File.separator + "add.html";
         }
         if (template.contains("edit.html.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "templates" + File.separator
-                    + packageName + File.separator + classname + File.separator + "edit.html";
+            return "src" + File.separator + "main" + File.separator + "resources" + File.separator + "templates" + File.separator
+                    + moduleName + File.separator + classname + File.separator + "edit.html";
         }
 
         if (template.contains("list.js.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "static" + File.separator + "js" + File.separator
-                    + "appjs" + File.separator + packageName + File.separator + classname + File.separator + classname + ".js";
+            return "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "js" + File.separator
+                    + "appjs" + File.separator + moduleName + File.separator + classname + File.separator + classname + ".js";
             //		+ "modules" + File.separator + "generator" + File.separator + className.toLowerCase() + ".js";
         }
         if (template.contains("add.js.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "static" + File.separator + "js" + File.separator
-                    + "appjs" + File.separator + packageName + File.separator + classname + File.separator + "add.js";
+            return "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "js" + File.separator
+                    + "appjs" + File.separator + moduleName + File.separator + classname + File.separator + "add.js";
         }
         if (template.contains("edit.js.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "static" + File.separator + "js" + File.separator
-                    + "appjs" + File.separator + packageName + File.separator + classname + File.separator + "edit.js";
+            return "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "js" + File.separator
+                    + "appjs" + File.separator + moduleName + File.separator + classname + File.separator + "edit.js";
         }
 
 //		if(template.contains("menu.sql.vm")){
